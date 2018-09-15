@@ -1,0 +1,1 @@
+Sample of multicast IPv6 address: FF02:0:0:0:0:1:FF34:5678

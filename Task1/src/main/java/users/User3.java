@@ -4,7 +4,7 @@ import app.MulticastApp;
 
 import java.io.IOException;
 
-public class User2 {
+public class User3 {
 	public static void main(String[] args) {
 		Thread app = null;
 		try {

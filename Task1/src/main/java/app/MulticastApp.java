@@ -2,6 +2,7 @@ package app;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -10,48 +11,59 @@ import java.io.IOException;
 import java.net.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Application that counters a copy of itself in a local network through multicast UDP messages sending.
+ * When an application copy appears or disappears this app prints a list of active application copies.
+ */
 public class MulticastApp extends Thread {
 	private static final Logger logger = LogManager.getLogger(MulticastApp.class.getName());
 	
 	private InetAddress group;
-	private MulticastSocket multicastSocket;
-	private DatagramSocket datagramSocket;
-	private int port;
-	private byte[] buffer = new byte[1024];
-	private byte[] inBuffer = new byte[1024];
-	private Map<String, String> copies = new HashMap<String, String>();
+	private MulticastSocket receiverSocket;
+	private DatagramSocket senderSocket;
+	private int portToSend;
+	private byte[] buffer = new byte[1024 * 1024];
+	private byte[] inBuffer = new byte[1024 * 1024];
+	private Map<String, AppInfo> copies = new ConcurrentHashMap<String, AppInfo>();
 	
-	private int confirmationTimeout = 3000;
+	private final int confirmationTimeout = 3000;
 	
-	
-	public MulticastApp(String groupIP, int port) {
-		try {
-			this.port = port;
-			this.group = InetAddress.getByName(groupIP);
-			this.multicastSocket = new MulticastSocket(port);
-			this.datagramSocket = new DatagramSocket();
-//			multicastSocket.setSoTimeout(10000);
+	/**
+	 * Allocates a MulticastApp object
+	 *
+	 * @param groupIP IP-address of multicast group for messaging with other copies of this app.
+	 * @param port port of multicast group
+	 *
+	 * @throws IOException when specified incorrect group IP (e.g. nonexistent or non-multicast)
+	 * @throws IllegalArgumentException when specified incorrect port
+	 */
+	public MulticastApp(String groupIP, int port) throws IOException, IllegalArgumentException {
+		this.portToSend = port;
+		System.out.println(groupIP);
+		this.group = InetAddress.getByName(groupIP);
 		
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.receiverSocket = new MulticastSocket(port);
+		this.senderSocket = new DatagramSocket();
+		
+		receiverSocket.joinGroup(group);
 	}
 	
 	@Override
 	public void run() {
 		try {
-			joinGroup();
-			Timer timer = new Timer();
-			timer.schedule(new LiveConfirmationTask(), confirmationTimeout, confirmationTimeout);
+			sendMessage(Event.JOIN);
+			
+			Timer confirmationTimer = new Timer();
+			confirmationTimer.schedule(new LiveConfirmation(), confirmationTimeout, confirmationTimeout);
+			
+			Timer listUpdateTimer = new Timer();
+			listUpdateTimer.schedule(new UpdatingListOfCopies(), confirmationTimeout, confirmationTimeout);
 			
 			while(true) {
-				System.out.println("-----------Round----------");
 				DatagramPacket inMessage = receiveMessage();
-				
-				System.out.println("Received: " + inMessage.toString());
+				logger.debug("\n-----------Round----------");
 				
 				parseMessage(inMessage);
 				
@@ -60,7 +72,7 @@ public class MulticastApp extends Thread {
 				}
 			}
 			
-			leaveGroup();
+			leaveGroup(group);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -69,24 +81,27 @@ public class MulticastApp extends Thread {
 	
 	/**
 	 * Parses specified message and does something depends on type of the message.
+	 *
 	 * @param packet message to parse
 	 */
-	private void parseMessage(DatagramPacket packet) {
+	private void parseMessage(DatagramPacket packet) throws IOException {
 		String stringMessage = new String(packet.getData(), 0, packet.getLength());
 		JSONParser parser = new JSONParser();
 		
 		try {
 			JSONObject jsonMessage = (JSONObject) parser.parse(stringMessage);
 			
+			logger.debug("Received: " + jsonMessage.toString());
+			
 			if(null != jsonMessage) {
 				String event = jsonMessage.get("event").toString();
 				
 				if(event.equals(Event.JOIN.toString())) {
-					copies.put(packet.getAddress().toString() + String.valueOf(packet.getPort()),
-							packet.getAddress().toString());
-					
+					parseJoin(packet);
 				} else if(event.equals(Event.ALIVE.toString())) {
-					copies.remove()
+					parseAlive(packet);
+				} else if(event.equals(Event.SHOW_LIST.toString())) {
+					parseShowList(jsonMessage);
 				}
 				
 			} else {
@@ -98,41 +113,130 @@ public class MulticastApp extends Thread {
 	}
 	
 	/**
-		Receives a message from the multicast group and returns it as DatagramPacket.
+	 * Parses "show_list" type of message.
+	 *
+	 * @param jsonMessage message to parse
+	 */
+	private void parseShowList(JSONObject jsonMessage) {
+		if((long) jsonMessage.get("sizeOfAppList") > copies.size()) {
+			copies.clear();
+			JSONArray jsonAppCopies = (JSONArray) jsonMessage.get("copies");
+			
+			jsonAppCopies.forEach(v -> {
+				JSONObject jsonAppCopy = (JSONObject) v;
+				
+				String ip = jsonAppCopy.get("ip").toString();
+				String port = jsonAppCopy.get("port").toString();
+				long lastActiveTime = (long) jsonAppCopy.get("lastActiveTime");
+				
+				copies.put(ip + port, new AppInfo(ip, port, lastActiveTime));
+				
+			});
+			
+			printAddressOfCopies();
+		}
+	}
+	
+	/**
+	 * Parses "alive" type of message.
+	 *
+	 * @param packet message to parse
+	 */
+	private void parseAlive(DatagramPacket packet) {
+		if(copies.containsKey(packet.getAddress().toString() + String.valueOf(packet.getPort()))) {
+			copies.get(packet.getAddress().toString() + String.valueOf(packet.getPort()))
+					.setLastActivityTime(System.currentTimeMillis());
+		} else {
+			copies.put(packet.getAddress().toString() + String.valueOf(packet.getPort()),
+					new AppInfo(packet.getAddress().toString(), String.valueOf(packet.getPort()), System.currentTimeMillis()));
+			printAddressOfCopies();
+		}
+	}
+	
+	/**
+	 * Parses "join" type of message.
+	 *
+	 * @param packet message to parse
+	 */
+	private void parseJoin(DatagramPacket packet) throws IOException {
+		copies.put(packet.getAddress().toString() + String.valueOf(packet.getPort()),
+				new AppInfo(packet.getAddress().toString(), String.valueOf(packet.getPort()), System.currentTimeMillis()));
+		
+		printAddressOfCopies();
+		
+		if(copies.size() > 1) {
+			sendMessage(Event.SHOW_LIST);
+		}
+	}
+	
+	/**
+	 * Receives a message from the multicast group and returns it as DatagramPacket.
 	 */
 	private DatagramPacket receiveMessage() throws IOException {
 		DatagramPacket packet = new DatagramPacket(inBuffer, inBuffer.length);
-		multicastSocket.receive(packet);
+		receiverSocket.receive(packet);
 		return packet;
 	}
 	
-	private void confirmLife() {
-	
+	/**
+	 * Leaves specified multicast group and closes socket-receiver of this group.
+	 *
+	 * @param group group to leave
+	 */
+	private void leaveGroup(InetAddress group) throws IOException {
+		receiverSocket.leaveGroup(group);
+		receiverSocket.close();
 	}
 	
-	private void leaveGroup() throws IOException {
-		multicastSocket.leaveGroup(group);
-		multicastSocket.close();
-	}
-	
-	private void joinGroup() throws IOException {
-		multicastSocket.joinGroup(group);
+	/**
+	 * Joins specified multicast group and sends the message to this group that this app is joined.
+	 *
+	 * @param group group to join
+	 */
+	private void joinGroup(InetAddress group) throws IOException {
+		receiverSocket.joinGroup(group);
 		sendMessage(Event.JOIN);
 	}
 	
+	/**
+	 * Sends specified type of message to the multicast group.
+	 *
+	 * @param event type of message
+	 */
 	private void sendMessage(Event event) throws IOException {
 		JSONObject outMessage = new JSONObject();
 		outMessage.put("event", event.toString());
 		
 		if(event.equals(Event.SHOW_LIST)) {
-			// TODO put the whole list of known ip
+			outMessage.put("sizeOfAppList", copies.size());
+			
+			JSONArray jsonAppCopies = new JSONArray();
+			
+			copies.forEach((k, v) -> {
+				JSONObject jsonAppCopy = new JSONObject();
+				
+				jsonAppCopy.put("ip", v.getIp());
+				jsonAppCopy.put("port", v.getPort());
+				jsonAppCopy.put("lastActiveTime", v.getLastActivityTime());
+				
+				jsonAppCopies.add(jsonAppCopy);
+			});
+			
+			outMessage.put("copies", jsonAppCopies);
 		}
-		System.out.println("Sent: " + outMessage.toString());
+		logger.debug("Sent: " + outMessage.toString());
 		
 		buffer = outMessage.toString().getBytes();
+		DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, portToSend);
 		
-		DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, port);
-		datagramSocket.send(packet);
+		senderSocket.send(packet);
+	}
+	
+	private void printAddressOfCopies() {
+		System.out.println("Actual list of copies:");
+		copies.forEach((k, v) -> {
+			System.out.println(v.getIp() + ":" + v.getPort());
+		});
 	}
 	
 	/*
@@ -142,30 +246,9 @@ public class MulticastApp extends Thread {
 		return ((int) Math.random() * 10 >= 9);
 	}
 	
-	private enum Event {
-		JOIN {
-			@Override
-			public String toString() {
-				return "join";
-			}
-		},
-		ALIVE {
-			@Override
-			public String toString() {
-				return "alive";
-			}
-		},
-		SHOW_LIST {
-			@Override
-			public String toString() {
-				return "show_list";
-			}
-		}
-	}
-	
-	private class LiveConfirmationTask extends TimerTask {
+	private class LiveConfirmation extends TimerTask {
 		@Override
-		public void run () {
+		public void run() {
 			try {
 				sendMessage(Event.ALIVE);
 			} catch (IOException e) {
@@ -173,4 +256,17 @@ public class MulticastApp extends Thread {
 			}
 		}
 	}
+	
+	private class UpdatingListOfCopies extends TimerTask {
+		@Override
+		public void run() {
+			copies.forEach((k, v) -> {
+				if(System.currentTimeMillis() - v.getLastActivityTime() > confirmationTimeout * 3) {
+					copies.remove(k);
+					printAddressOfCopies();
+				}
+			});
+		}
+	}
+	
 }
