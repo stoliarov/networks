@@ -1,0 +1,1283 @@
+[15/09/18 06:19:03:003 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[15/09/18 06:19:04:004 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[15/09/18 06:19:04:004 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[15/09/18 06:19:06:006 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[15/09/18 06:19:06:006 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[15/09/18 06:19:07:007 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[15/09/18 06:19:09:009 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[15/09/18 06:19:09:009 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[15/09/18 06:19:09:009 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[15/09/18 06:19:12:012 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[15/09/18 06:19:13:013 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[15/09/18 06:19:13:013 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:11:011 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 11:14:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 11:14:14:014 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:17:017 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:20:020 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:23:023 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:26:026 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:29:029 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:32:032 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:35:035 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:35:035 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:35:035 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:38:038 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:38:038 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:38:038 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:41:041 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:41:041 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:41:041 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"sizeOfAppList":2,"copies":[{"lastActiveTime":1537330482069,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330481844,"port":"34009","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":2,"copies":[{"lastActiveTime":1537330482069,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330481844,"port":"34009","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:42:042 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":2,"copies":[{"lastActiveTime":1537330482069,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330481844,"port":"34009","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:44:044 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:44:044 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:44:044 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:44:044 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:44:044 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:45:045 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:47:047 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:47:047 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:47:047 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:47:047 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:47:047 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:50:050 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:50:050 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:50:050 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:50:050 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:50:050 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:51:051 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Sent: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491081,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490845,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Sent: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491082,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490846,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491082,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490846,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491081,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490845,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491082,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490846,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491081,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490845,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491082,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490846,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537330491081,"port":"43086","ip":"\/192.168.43.211"},{"lastActiveTime":1537330490845,"port":"34009","ip":"\/192.168.43.211"},{"lastActiveTime":1537330493553,"port":"54852","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:14:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:05:005 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:08:008 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:17:017 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:20:020 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:23:023 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:15:26:026 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:15:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:15:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 11:21:35:035 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 11:21:38:038 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:21:41:041 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 11:21:52:052 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 11:21:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 11:21:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:08:12:012 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 12:08:12:012 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:12:012 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:08:15:015 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:15:015 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:15:015 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:18:018 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:18:018 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:18:018 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:21:021 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:21:021 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:21:021 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:24:024 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:24:024 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:24:024 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Sent: {"sizeOfAppList":2,"copies":[{"lastActiveTime":1537333707661,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333707571,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":2,"copies":[{"lastActiveTime":1537333707661,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333707571,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:27:027 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":2,"copies":[{"lastActiveTime":1537333707661,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333707571,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Sent: {"event":"join"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Sent: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737668,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739911,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737575,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737668,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739911,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737575,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Sent: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737669,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739919,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737577,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737669,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739919,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737577,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737668,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739911,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737575,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737669,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739919,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737577,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:08:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"join"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737668,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739911,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737575,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"sizeOfAppList":3,"copies":[{"lastActiveTime":1537333737669,"port":"55957","ip":"\/192.168.43.211"},{"lastActiveTime":1537333739919,"port":"38385","ip":"\/192.168.43.211"},{"lastActiveTime":1537333737577,"port":"46419","ip":"\/192.168.43.211"}],"event":"show_list"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:02:002 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:05:005 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:05:005 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:05:005 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:05:005 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:05:005 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:06:006 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:06:006 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:06:006 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:06:006 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:06:006 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:08:008 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:08:008 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:08:008 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:08:008 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:08:008 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:09:009 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:09:009 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:09:009 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:09:009 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:09:009 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:11:011 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:11:011 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:11:011 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:12:012 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:12:012 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:12:012 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:12:012 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:12:012 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:14:014 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:15:015 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:15:015 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:15:015 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:15:015 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:15:015 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:17:017 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:18:018 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:18:018 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:18:018 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:18:018 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:18:018 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:20:020 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:21:021 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:21:021 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:21:021 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:21:021 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:21:021 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:23:023 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:26:026 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:09:29:029 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:09:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:09:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:24:024 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:24:024 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:24:024 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:27:027 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:30:030 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:33:033 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:34:034 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:34:034 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:34:034 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:34:034 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:34:034 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:36:036 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:37:037 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:37:037 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:37:037 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:37:037 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:37:037 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:39:039 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:40:040 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:40:040 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:40:040 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:40:040 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:40:040 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:43:043 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:43:043 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:43:043 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:43:043 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:43:043 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:45:045 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:49:049 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:52:052 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:54:054 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:55:055 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:55:055 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:55:055 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:55:055 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:55:055 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:57:057 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:57:057 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:57:057 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:58:058 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:18:58:058 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:58:058 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:18:58:058 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:18:58:058 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:00:000 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:00:000 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:00:000 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:01:001 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:01:001 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:01:001 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:01:001 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:01:001 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:03:003 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:03:003 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:03:003 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:04:004 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:04:004 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:04:004 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:04:004 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:04:004 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:06:006 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:06:006 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:06:006 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:09:009 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:09:009 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:09:009 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:12:012 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:12:012 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:12:012 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:19:15:015 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:19:15:015 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:19:15:015 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:12:012 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:12:012 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:12:012 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:14:014 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:14:014 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:14:014 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:15:015 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:15:015 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:15:015 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:15:015 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:15:015 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:17:017 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:18:018 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:20:020 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:21:021 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:23:023 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:24:024 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:26:026 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:35:035 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:35:035 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:35:035 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:35:035 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:35:035 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:36:036 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:38:038 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:38:038 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:38:038 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:38:038 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:38:038 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:39:039 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:41:041 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:41:041 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:41:041 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:41:041 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:41:041 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:44:044 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:44:044 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:44:044 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:44:044 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:44:044 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:45:045 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:47:047 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:47:047 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:47:047 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:47:047 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:47:047 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:50:050 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:50:050 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:50:050 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:53:053 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:53:053 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:53:053 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:56:056 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:56:056 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:56:056 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:23:59:059 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:23:59:059 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:23:59:059 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:27:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:27:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:27:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:27:51:051 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:27:51:051 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:27:51:051 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:27:54:054 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:27:54:054 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:27:54:054 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:24:024 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:24:024 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:24:024 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:27:027 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:27:027 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:27:027 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:28:028 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:28:028 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:29:029 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:29:029 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:30:030 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:30:030 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:30:030 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:32:032 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:32:032 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:33:033 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:33:033 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:33:033 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:34:034 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:34:034 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:35:035 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:35:035 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:36:036 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:36:036 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:36:036 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:37:037 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:37:037 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:38:038 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:38:038 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:39:039 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:39:039 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:39:039 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:40:040 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:40:040 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:41:041 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:41:041 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:42:042 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:42:042 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:42:042 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:43:043 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:43:043 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:44:044 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:44:044 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:45:045 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:45:045 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:45:045 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:46:046 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:46:046 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
+[19/09/18 12:28:48:048 NOVT] DEBUG app.MulticastApp: Sent: {"event":"alive"}
+[19/09/18 12:28:48:048 NOVT] DEBUG app.MulticastApp: 
+-----------Round----------
+[19/09/18 12:28:48:048 NOVT] DEBUG app.MulticastApp: Received: {"event":"alive"}
