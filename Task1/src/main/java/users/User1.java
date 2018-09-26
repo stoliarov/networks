@@ -21,7 +21,7 @@ public class User1 {
 					
 				} catch (IOException e) {
 					System.out.println("You've specified incorrect IP address. Will uses default IP and port: 230.0.0.0:4001");
-					app = new MulticastApp("230.0.0.0", 4001);
+					app = new MulticastApp("230.0.0.1", 1);
 					
 				} catch (IllegalArgumentException e) {
 					System.out.println("You've specified incorrect port. Will uses default IP and port: 230.0.0.0:4001");

@@ -53,7 +53,7 @@ public class MulticastApp extends Thread {
 	@Override
 	public void run() {
 		try {
-			sendMessage(Event.JOIN);
+			sendMessage(Event.ALIVE);
 			
 			Timer confirmationTimer = new Timer();
 			confirmationTimer.schedule(new LiveConfirmation(), confirmationTimeout, confirmationTimeout);
@@ -67,12 +67,11 @@ public class MulticastApp extends Thread {
 				
 				parseMessage(inMessage);
 				
-				if(random10()) {
-					break;
+				if(interrupted()) {
+					leaveGroup(group);
+					return;
 				}
 			}
-			
-			leaveGroup(group);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,44 +95,15 @@ public class MulticastApp extends Thread {
 			if(null != jsonMessage) {
 				String event = jsonMessage.get("event").toString();
 				
-				if(event.equals(Event.JOIN.toString())) {
-					parseJoin(packet);
-				} else if(event.equals(Event.ALIVE.toString())) {
+				if(event.equals(Event.ALIVE.toString())) {
 					parseAlive(packet);
-				} else if(event.equals(Event.SHOW_LIST.toString())) {
-					parseShowList(jsonMessage);
 				}
 				
 			} else {
-				logger.error("Fail to parse the received message");
+				logger.error("Fail to parse the received message: " + stringMessage);
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Parses "show_list" type of message.
-	 *
-	 * @param jsonMessage message to parse
-	 */
-	private void parseShowList(JSONObject jsonMessage) {
-		if((long) jsonMessage.get("sizeOfAppList") > copies.size()) {
-			copies.clear();
-			JSONArray jsonAppCopies = (JSONArray) jsonMessage.get("copies");
-			
-			jsonAppCopies.forEach(v -> {
-				JSONObject jsonAppCopy = (JSONObject) v;
-				
-				String ip = jsonAppCopy.get("ip").toString();
-				String port = jsonAppCopy.get("port").toString();
-				long lastActiveTime = (long) jsonAppCopy.get("lastActiveTime");
-				
-				copies.put(ip + port, new AppInfo(ip, port, lastActiveTime));
-				
-			});
-			
-			printAddressOfCopies();
 		}
 	}
 	
@@ -150,22 +120,6 @@ public class MulticastApp extends Thread {
 			copies.put(packet.getAddress().toString() + String.valueOf(packet.getPort()),
 					new AppInfo(packet.getAddress().toString(), String.valueOf(packet.getPort()), System.currentTimeMillis()));
 			printAddressOfCopies();
-		}
-	}
-	
-	/**
-	 * Parses "join" type of message.
-	 *
-	 * @param packet message to parse
-	 */
-	private void parseJoin(DatagramPacket packet) throws IOException {
-		copies.put(packet.getAddress().toString() + String.valueOf(packet.getPort()),
-				new AppInfo(packet.getAddress().toString(), String.valueOf(packet.getPort()), System.currentTimeMillis()));
-		
-		printAddressOfCopies();
-		
-		if(copies.size() > 1) {
-			sendMessage(Event.SHOW_LIST);
 		}
 	}
 	
@@ -189,16 +143,6 @@ public class MulticastApp extends Thread {
 	}
 	
 	/**
-	 * Joins specified multicast group and sends the message to this group that this app is joined.
-	 *
-	 * @param group group to join
-	 */
-	private void joinGroup(InetAddress group) throws IOException {
-		receiverSocket.joinGroup(group);
-		sendMessage(Event.JOIN);
-	}
-	
-	/**
 	 * Sends specified type of message to the multicast group.
 	 *
 	 * @param event type of message
@@ -207,23 +151,6 @@ public class MulticastApp extends Thread {
 		JSONObject outMessage = new JSONObject();
 		outMessage.put("event", event.toString());
 		
-		if(event.equals(Event.SHOW_LIST)) {
-			outMessage.put("sizeOfAppList", copies.size());
-			
-			JSONArray jsonAppCopies = new JSONArray();
-			
-			copies.forEach((k, v) -> {
-				JSONObject jsonAppCopy = new JSONObject();
-				
-				jsonAppCopy.put("ip", v.getIp());
-				jsonAppCopy.put("port", v.getPort());
-				jsonAppCopy.put("lastActiveTime", v.getLastActivityTime());
-				
-				jsonAppCopies.add(jsonAppCopy);
-			});
-			
-			outMessage.put("copies", jsonAppCopies);
-		}
 		logger.debug("Sent: " + outMessage.toString());
 		
 		buffer = outMessage.toString().getBytes();
@@ -237,13 +164,6 @@ public class MulticastApp extends Thread {
 		copies.forEach((k, v) -> {
 			System.out.println(v.getIp() + ":" + v.getPort());
 		});
-	}
-	
-	/*
-		Returns true or false with a chance of 10%.
-    */
-	private boolean random10() {
-		return ((int) Math.random() * 10 >= 9);
 	}
 	
 	private class LiveConfirmation extends TimerTask {
