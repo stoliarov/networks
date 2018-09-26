@@ -5,12 +5,13 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import ru.nsu.stoliarov.task2.Connection;
 import ru.nsu.stoliarov.task2.Event;
-import ru.nsu.stoliarov.task2.JsonParser;
+import ru.nsu.stoliarov.task2.Message;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -24,16 +25,17 @@ public class ClientApp {
 	 *
 	 * @return whether or not the sending was successful
 	 */
-	public boolean sendFile(String host, int port, String path) {
+	public boolean sendFile(String host, int port, String filePath) {
 		try {
+			File file = new File(filePath);
+			
 			InetAddress address = InetAddress.getByName(host);
 			Socket socket = new Socket(address, port);
-			
 			this.connection = new Connection(socket.getInputStream(), socket.getOutputStream(), socket);
 			
 			sendHi();
-			sendMetadata("filename", 1000);
-			sendData();
+			sendMetadata(file.getName(), file.length());
+			sendData(file);
 			
 			try {
 				sleep(30000);
@@ -42,6 +44,7 @@ public class ClientApp {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			connection.closeConnection();
 			return false;
 		}
 		
@@ -50,43 +53,56 @@ public class ClientApp {
 	}
 	
 	private void sendHi() throws IOException {
-		JSONObject jsonToSend = new JSONObject();
-		jsonToSend.put("event", Event.HI.toString());
+		JSONObject head = new JSONObject();
+		head.put("event", Event.HI.toString());
 		
-		outStream.write(jsonToSend.toString().getBytes());
-		outStream.flush();
+		connection.sendMessage(new Message(head, null));
+		connection.receiveMessage(Event.HI);
+	}
+	
+	private void sendMetadata(String fileName, long fileSize) throws IOException {
+		JSONObject head = new JSONObject();
+		head.put("event", Event.METADATA);
+		head.put("name", fileName);
+		head.put("size", fileSize);
+
+		connection.sendMessage(new Message(head, null));
+		Message response = connection.receiveMessage(Event.GOT);
 		
-		byte[] receivedBytes = readMessage();
+		if((long) response.getHead().get("number") != 0) {
+			throw new IOException("Unexpected response after receipt from server. Actual GOT number: "
+					+ response.getHead().get("number") + " Expected: 0");
+		}
+	}
+	
+	private void sendData(File file) throws IOException {
+		FileInputStream fileInputStream = new FileInputStream(file);
 		
-		JSONObject receivedJson = JsonParser.getJSONbyBytes(receivedBytes, 0, receivedBytes.length);
-		System.out.println("Client got:" + receivedJson.toString());
-		
-		if(null != receivedJson) {
-			if(!Event.HI.toString().equals(receivedJson.get("event"))) {
-				throw new IOException("Received unexpected type of message: " + receivedJson.get("event")
-						+ ". Expected: " + Event.HI.toString());
-			}
+		if(file.length() < connection.DATA_SIZE) {
+			sendDataPiece(fileInputStream.readAllBytes(), 1);
+			
 		} else {
-			throw new IOException("Fail to parse the received message: "
-					+ new String(receivedBytes, 0, receivedBytes.length));
+			for(int i = 0; i < file.length() / connection.DATA_SIZE; ++i) {
+				byte[] data = new byte[connection.DATA_SIZE];
+				fileInputStream.read(data, 0, connection.DATA_SIZE);
+				sendDataPiece(data, i + 1);
+			}
+			
+			sendDataPiece(fileInputStream.readAllBytes(), file.length() / connection.DATA_SIZE + 1);
 		}
 	}
 	
-	private void sendMetadata(String fileName, long fileSize) {
-		JSONObject jsonMessage = new JSONObject();
-		jsonMessage.put("event", Event.METADATA);
-		jsonMessage.put("name", fileName);
-		jsonMessage.put("size", fileSize);
+	private void sendDataPiece(byte[] data, long number) throws IOException {
+		JSONObject head = new JSONObject();
+		head.put("event", Event.DATA);
+		head.put("number", number);
 		
-		try {
-			outStream.write(jsonMessage.toString().getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-			// TODO возмножно нужна обработка таких ошибок
+		connection.sendMessage(new Message(head, data));
+		Message response = connection.receiveMessage(Event.GOT);
+		
+		if((long) response.getHead().get("number") != number) {
+			throw new IOException("Unexpected response after receipt from server. Actual GOT number: "
+					+ response.getHead().get("number") + " Expected: " + number);
 		}
-	}
-	
-	private void sendData() {
-	
 	}
 }

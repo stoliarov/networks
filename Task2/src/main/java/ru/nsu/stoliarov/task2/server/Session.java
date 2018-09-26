@@ -2,12 +2,9 @@ package ru.nsu.stoliarov.task2.server;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.json.simple.JSONObject;
 import ru.nsu.stoliarov.task2.Connection;
-import ru.nsu.stoliarov.task2.Event;
-import ru.nsu.stoliarov.task2.JsonParser;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -38,26 +35,12 @@ public class Session extends Thread {
 		}
 	}
 	
+	// todo заполняем методы получения HI, METADATA, DATA
+	// todo организовать отправку сообщения об успехе передачи файла
+	// todo вывод скорости приема
+	
 	private void getHi() throws IOException {
-		byte[] receivedBytes = readMessage();
-		
-		JSONObject receivedJson = JsonParser.getJSONbyBytes(receivedBytes, 0, receivedBytes.length);
-		System.out.println("Server got:" + receivedJson.toString());
-		
-		if(null != receivedJson) {
-			if(Event.HI.toString().equals(receivedJson.get("event"))) {
-				JSONObject jsonToSend = new JSONObject();
-				jsonToSend.put("event", Event.HI.toString());
-				outStream.write(jsonToSend.toString().getBytes());
-				outStream.flush();
-			} else {
-				throw new IOException("Received unexpected type of message: " + receivedJson.get("event")
-						+ ". Expected: " + Event.HI.toString());
-			}
-		} else {
-			throw new IOException("Fail to parse the received message: "
-					+ new String(receivedBytes, 0, receivedBytes.length));
-		}
+	
 	}
 	
 	private void getMetadata() {
