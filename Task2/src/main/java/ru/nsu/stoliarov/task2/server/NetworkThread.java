@@ -32,9 +32,7 @@ public class NetworkThread extends Thread {
 	public void run() {
 		while(true) {
 			try {
-				FileInputStream fileInputStream = new FileInputStream("Setup.exe");
-				BufferedInputStream in = new BufferedInputStream(fileInputStream);
-				
+				logger.debug("Waiting for connect...");
 				Socket socket = serverSocket.accept();
 				
 				Session session = new Session(tasks, socket);

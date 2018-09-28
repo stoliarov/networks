@@ -30,21 +30,21 @@ public class ClientApp {
 			File file = new File(filePath);
 			
 			InetAddress address = InetAddress.getByName(host);
+			logger.debug("Connecting...");
 			Socket socket = new Socket(address, port);
+			logger.debug("Connected");
 			this.connection = new Connection(socket.getInputStream(), socket.getOutputStream(), socket);
 			
 			sendHi();
 			sendMetadata(file.getName(), file.length());
 			sendData(file);
+			receiveResult();
+			connection.closeConnection();
 			
-			try {
-				sleep(30000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			connection.closeConnection();
+			System.out.println("The file sent UNsuccessfully");
 			return false;
 		}
 		
@@ -62,7 +62,7 @@ public class ClientApp {
 	
 	private void sendMetadata(String fileName, long fileSize) throws IOException {
 		JSONObject head = new JSONObject();
-		head.put("event", Event.METADATA);
+		head.put("event", Event.METADATA.toString());
 		head.put("name", fileName);
 		head.put("size", fileSize);
 
@@ -79,7 +79,10 @@ public class ClientApp {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		
 		if(file.length() < connection.DATA_SIZE) {
-			sendDataPiece(fileInputStream.readAllBytes(), 1);
+			byte[] data = new byte[fileInputStream.available()];
+			fileInputStream.read(data);
+			
+			sendDataPiece(data, 1);
 			
 		} else {
 			for(int i = 0; i < file.length() / connection.DATA_SIZE; ++i) {
@@ -88,13 +91,16 @@ public class ClientApp {
 				sendDataPiece(data, i + 1);
 			}
 			
-			sendDataPiece(fileInputStream.readAllBytes(), file.length() / connection.DATA_SIZE + 1);
+			byte[] data = new byte[fileInputStream.available()];
+			fileInputStream.read(data);
+			
+			sendDataPiece(data, file.length() / connection.DATA_SIZE + 1);
 		}
 	}
 	
 	private void sendDataPiece(byte[] data, long number) throws IOException {
 		JSONObject head = new JSONObject();
-		head.put("event", Event.DATA);
+		head.put("event", Event.DATA.toString());
 		head.put("number", number);
 		
 		connection.sendMessage(new Message(head, data));
@@ -103,6 +109,19 @@ public class ClientApp {
 		if((long) response.getHead().get("number") != number) {
 			throw new IOException("Unexpected response after receipt from server. Actual GOT number: "
 					+ response.getHead().get("number") + " Expected: " + number);
+		}
+	}
+	
+	private void receiveResult() throws IOException {
+		JSONObject head = new JSONObject();
+		head.put("event", Event.GET_RESULT.toString());
+		connection.sendMessage(new Message(head, null));
+		
+		JSONObject result = connection.receiveMessage(Event.RESULT).getHead();
+		if(result.get("event").toString().equals(Event.RESULT.toString()) && (boolean) result.get("status") == (true)) {
+			System.out.println("The file sent successfully");
+		} else {
+			System.out.println("The file sent UNsuccessfully_1");
 		}
 	}
 }

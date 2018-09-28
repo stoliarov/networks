@@ -56,9 +56,11 @@ public class Connection {
 		byte[] headBytes;
 		byte[] data = null;
 		
-		if(expected.equals(Event.DATA.toString())) {
+		if(expected.toString().equals(Event.DATA.toString())) {
 			headBytes = readHead();
-			head = JsonParser.getJSONbyBytes(headBytes, 0, HEAD_SIZE);
+			String headString = new String(headBytes, 0, HEAD_SIZE);
+			headString = headString.trim();
+			head = JsonParser.getJSONbyString(headString);
 			data = readData();
 			
 		} else {
@@ -73,12 +75,12 @@ public class Connection {
 		if(!head.containsKey("event")) {
 			throw new IOException("Received the message without specified type");
 		}
-		if(!expected.equals(head.get("event"))) {
+		if(!expected.toString().equals(head.get("event").toString())) {
 			throw new IOException("Received unexpected type of message: " + head.get("event")
 					+ ". Expected: " + expected.toString());
 		}
 		
-		logger.debug("Client got:" + head.toString());
+//		logger.debug("Got:" + head.toString() + ".");
 		
 		return new Message(head, data);
 	}

@@ -14,4 +14,14 @@ public class JsonParser {
 			return null;
 		}
 	}
+	
+	static public JSONObject getJSONbyString(String jsonString) {
+		JSONParser parser = new JSONParser();
+		try {
+			return (JSONObject) parser.parse(jsonString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

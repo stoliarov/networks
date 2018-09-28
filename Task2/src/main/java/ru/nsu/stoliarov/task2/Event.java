@@ -28,10 +28,16 @@ public enum Event {
 			return "data";
 		}
 	},
-	BYE {
+	RESULT {
 		@Override
 		public String toString() {
-			return "bye";
+			return "result";
+		}
+	},
+	GET_RESULT {
+		@Override
+		public String toString() {
+			return "get_result";
 		}
 	}
 }
