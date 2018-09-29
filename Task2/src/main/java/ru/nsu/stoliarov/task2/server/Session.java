@@ -63,8 +63,13 @@ public class Session extends Thread {
 	private void receiveData() throws IOException {
 		long quantityOfDataPiece = fileSize / connection.DATA_SIZE + 1;
 		
+		LinkedBlockingQueue<Long> messageLengths = new LinkedBlockingQueue<Long>(100000);
+		Thread speedMeasurer = new SpeedMeasurer(messageLengths, System.currentTimeMillis());
+		speedMeasurer.start();
+		
 		for(long i = 0; i < quantityOfDataPiece; ++i) {
 			Message message = connection.receiveMessage(Event.DATA);
+			messageLengths.offer(message.length());
 			
 			if(i + 1 != (long) message.getHead().get("number")) {
 				throw new IOException("Got unexpected number of data piece");
@@ -83,11 +88,14 @@ public class Session extends Thread {
 			head.put("number", message.getHead().get("number"));
 			connection.sendMessage(new Message(head, null));
 		}
+		
+		speedMeasurer.interrupt();
 	}
 	
 	private void sendResult(boolean isSuccess) {
+		Message received = null;
 		try {
-			connection.receiveMessage(Event.GET_RESULT);
+			received = connection.receiveMessage(Event.GET_RESULT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -95,6 +103,12 @@ public class Session extends Thread {
 		JSONObject head = new JSONObject();
 		head.put("event", Event.RESULT.toString());
 		head.put("status", isSuccess);
+		
+		if(isSuccess && null != received) {
+			logger.debug("File received successfully: " + received.getHead().get("name").toString());
+		} else {
+			logger.debug("File is not received: " + head.get("name").toString());
+		}
 		
 		try {
 			connection.sendMessage(new Message(head, null));

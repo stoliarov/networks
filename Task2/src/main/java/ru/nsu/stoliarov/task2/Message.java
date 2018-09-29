@@ -26,4 +26,8 @@ public class Message {
 	public void setData(byte[] data) {
 		this.data = data;
 	}
+	
+	public long length() {
+		return (null == head ? 0 : head.toString().length()) + (null == data ? 0 : data.length);
+	}
 }

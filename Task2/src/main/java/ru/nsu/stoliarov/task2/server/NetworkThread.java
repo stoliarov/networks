@@ -3,8 +3,6 @@ package ru.nsu.stoliarov.task2.server;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,6 +32,7 @@ public class NetworkThread extends Thread {
 			try {
 				logger.debug("Waiting for connect...");
 				Socket socket = serverSocket.accept();
+				logger.debug("Connected: " + socket.getInetAddress() + ":" + socket.getPort());
 				
 				Session session = new Session(tasks, socket);
 				session.start();

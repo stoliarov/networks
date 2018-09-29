@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import static java.lang.Thread.sleep;
-
 public class ClientApp {
 	private static final Logger logger = LogManager.getLogger(ClientApp.class.getName());
 	
@@ -38,13 +36,13 @@ public class ClientApp {
 			sendHi();
 			sendMetadata(file.getName(), file.length());
 			sendData(file);
-			receiveResult();
+			receiveResult(file.getName());
 			connection.closeConnection();
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 			connection.closeConnection();
-			System.out.println("The file sent UNsuccessfully");
+			logger.debug("The file sent UNsuccessfully");
 			return false;
 		}
 		
@@ -112,16 +110,17 @@ public class ClientApp {
 		}
 	}
 	
-	private void receiveResult() throws IOException {
+	private void receiveResult(String fileName) throws IOException {
 		JSONObject head = new JSONObject();
 		head.put("event", Event.GET_RESULT.toString());
+		head.put("name", fileName);
 		connection.sendMessage(new Message(head, null));
 		
 		JSONObject result = connection.receiveMessage(Event.RESULT).getHead();
 		if(result.get("event").toString().equals(Event.RESULT.toString()) && (boolean) result.get("status") == (true)) {
-			System.out.println("The file sent successfully");
+			logger.debug("The file sent successfully: " + fileName);
 		} else {
-			System.out.println("The file sent UNsuccessfully_1");
+			logger.debug("The file sent UNsuccessfully:1");
 		}
 	}
 }
