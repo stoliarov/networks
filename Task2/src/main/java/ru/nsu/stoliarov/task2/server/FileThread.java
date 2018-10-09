@@ -20,7 +20,7 @@ public class FileThread extends Thread {
 	
 	public FileThread(LinkedBlockingQueue<Task> tasks) {
 		this.taskQueue = tasks;
-		fileStreams = new HashMap<>();
+		fileStreams = new HashMap<String, FileOutputStream>();
 	}
 	
 	@Override
@@ -43,6 +43,13 @@ public class FileThread extends Thread {
 				
 			} catch (InterruptedException e) {
 				logger.debug("File thread is interrupted.");
+				fileStreams.forEach((k, v) -> {
+					try {
+						v.close();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				});
 				return;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

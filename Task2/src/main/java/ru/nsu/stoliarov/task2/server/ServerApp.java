@@ -28,6 +28,5 @@ public class ServerApp extends Thread {
 		NetworkThread networkThread = new NetworkThread(port, taskQueue);
 		networkThread.start();
 		
-		
 	}
 }

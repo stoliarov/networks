@@ -46,7 +46,6 @@ public class ClientApp {
 			return false;
 		}
 		
-		connection.closeConnection();
 		return true;
 	}
 	
@@ -67,44 +66,48 @@ public class ClientApp {
 		connection.sendMessage(new Message(head, null));
 		Message response = connection.receiveMessage(Event.GOT);
 		
-		if((long) response.getHead().get("number") != 0) {
+		if(Long.valueOf(response.getHead().get("number").toString()) != 0) {
 			throw new IOException("Unexpected response after receipt from server. Actual GOT number: "
 					+ response.getHead().get("number") + " Expected: 0");
 		}
 	}
 	
 	private void sendData(File file) throws IOException {
-		FileInputStream fileInputStream = new FileInputStream(file);
-		
-		if(file.length() < connection.DATA_SIZE) {
-			byte[] data = new byte[fileInputStream.available()];
-			fileInputStream.read(data);
-			
-			sendDataPiece(data, 1);
-			
-		} else {
-			for(int i = 0; i < file.length() / connection.DATA_SIZE; ++i) {
+		try(FileInputStream fileInputStream = new FileInputStream(file)) {
+			if(file.length() < connection.DATA_SIZE) {
 				byte[] data = new byte[connection.DATA_SIZE];
-				fileInputStream.read(data, 0, connection.DATA_SIZE);
-				sendDataPiece(data, i + 1);
+				int size = fileInputStream.read(data);
+				
+				sendDataPiece(data, 1, size);
+				
+			} else {
+				for(int i = 0; i < file.length() / connection.DATA_SIZE; ++i) {
+					byte[] data = new byte[connection.DATA_SIZE];
+					fileInputStream.read(data, 0, connection.DATA_SIZE);
+					sendDataPiece(data, i + 1, connection.DATA_SIZE);
+				}
+				
+				if(fileInputStream.available() > 0) {
+					byte[] data = new byte[connection.DATA_SIZE];
+					int size = fileInputStream.read(data);
+					
+					sendDataPiece(data, file.length() / connection.DATA_SIZE + 1, size);
+				}
 			}
-			
-			byte[] data = new byte[fileInputStream.available()];
-			fileInputStream.read(data);
-			
-			sendDataPiece(data, file.length() / connection.DATA_SIZE + 1);
 		}
 	}
 	
-	private void sendDataPiece(byte[] data, long number) throws IOException {
+	private void sendDataPiece(byte[] data, long number, int size) throws IOException {
 		JSONObject head = new JSONObject();
 		head.put("event", Event.DATA.toString());
 		head.put("number", number);
+		head.put("size", size);
+		
 		
 		connection.sendMessage(new Message(head, data));
 		Message response = connection.receiveMessage(Event.GOT);
 		
-		if((long) response.getHead().get("number") != number) {
+		if(Long.valueOf(response.getHead().get("number").toString()) != number) {
 			throw new IOException("Unexpected response after receipt from server. Actual GOT number: "
 					+ response.getHead().get("number") + " Expected: " + number);
 		}
@@ -117,7 +120,7 @@ public class ClientApp {
 		connection.sendMessage(new Message(head, null));
 		
 		JSONObject result = connection.receiveMessage(Event.RESULT).getHead();
-		if(result.get("event").toString().equals(Event.RESULT.toString()) && (boolean) result.get("status") == (true)) {
+		if(result.get("event").toString().equals(Event.RESULT.toString()) && Boolean.valueOf(result.get("status").toString()) == (true)) {
 			logger.debug("The file sent successfully: " + fileName);
 		} else {
 			logger.debug("The file sent UNsuccessfully:1");

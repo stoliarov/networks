@@ -11,7 +11,7 @@ public class Connection {
 	private static final Logger logger = LogManager.getLogger(Connection.class.getName());
 	
 	public final int BUFFER_SIZE = 8192;
-	public final int HEAD_SIZE = 64;
+	public final int HEAD_SIZE = 92;
 	public final int DATA_SIZE = BUFFER_SIZE - HEAD_SIZE;
 	
 	private BufferedInputStream inStream;
@@ -25,25 +25,22 @@ public class Connection {
 	}
 	
 	public void sendMessage(Message message) throws IOException {
-		byte[] bufferToSend;
+		byte[] bufferToSend = new byte[BUFFER_SIZE];
 		
 		if(null == message.getData()) {
-			bufferToSend = message.getHead().toString().getBytes();
+			byte[] head = message.getHead().toString().getBytes();
+			System.arraycopy(head, 0, bufferToSend, 0, head.length);
+			
 		} else {
 			if(message.getHead().toString().length() > HEAD_SIZE) {
 				throw new IOException("Unable to send the message. Size of head of message (" + message.getHead().toString().length()
 						+ ") more than maximum head size (" + HEAD_SIZE + ")." + " This head: " + message.getHead().toString());
 			}
 			
-			bufferToSend = new byte[HEAD_SIZE + message.getData().length];
-			byte[] headBytes = message.getHead().toString().getBytes();
+			byte[] head = message.getHead().toString().getBytes();
 			
-			for(int i = 0; i < headBytes.length; ++i) {
-				bufferToSend[i] = headBytes[i];
-			}
-			for(int i = HEAD_SIZE; i < bufferToSend.length; ++i) {
-				bufferToSend[i] = message.getData()[i - HEAD_SIZE];
-			}
+			System.arraycopy(head, 0, bufferToSend, 0, head.length);
+			System.arraycopy(message.getData(), 0, bufferToSend, HEAD_SIZE, message.getData().length);
 		}
 		
 		outStream.write(bufferToSend);
@@ -58,20 +55,32 @@ public class Connection {
 		
 		if(expected.toString().equals(Event.DATA.toString())) {
 			headBytes = readHead();
+			
 			String headString = new String(headBytes, 0, HEAD_SIZE);
 			headString = headString.trim();
+			
 			head = JsonParser.getJSONbyString(headString);
-			data = readData();
+			checkHead(head, expected);
+			
+			data = read(Integer.valueOf(head.get("size").toString()));
 			
 		} else {
-			headBytes = readAll();
-			head = JsonParser.getJSONbyBytes(headBytes, 0, headBytes.length);
+			headBytes = read(BUFFER_SIZE);
+			
+			String headString = new String(headBytes, 0, headBytes.length);
+			headString = headString.trim();
+			
+			head = JsonParser.getJSONbyString(headString);
+			checkHead(head, expected);
 		}
 		
-		if(null == head) {
-			throw new IOException("Fail to parse the received message: "
-					+ new String(headBytes, 0, headBytes.length));
-		}
+//		logger.debug("Got:" + head.toString() + ".");
+		
+		return new Message(head, data);
+	}
+	
+	private void checkHead(JSONObject head, Event expected) throws IOException {
+		
 		if(!head.containsKey("event")) {
 			throw new IOException("Received the message without specified type");
 		}
@@ -79,10 +88,6 @@ public class Connection {
 			throw new IOException("Received unexpected type of message: " + head.get("event")
 					+ ". Expected: " + expected.toString());
 		}
-		
-//		logger.debug("Got:" + head.toString() + ".");
-		
-		return new Message(head, data);
 	}
 	
 	private byte[] readAll() throws IOException {
@@ -102,7 +107,7 @@ public class Connection {
 	private byte[] readHead() throws IOException {
 		byte firstByte = (byte) inStream.read();
 		int available = inStream.available();
-		
+
 		if(available < HEAD_SIZE) throw new IOException("Too short head size");
 		
 		byte[] inBuffer = new byte[HEAD_SIZE];
@@ -114,13 +119,12 @@ public class Connection {
 		return inBuffer;
 	}
 	
-	private byte[] readData() throws IOException {
-		int available = inStream.available();
-		if(available < 1) throw new IOException("Message with type DATA contain no data");
+	private byte[] read(int size) throws IOException {
+		byte[] inBuffer = new byte[size];
+		int count = 0;
 		
-		byte[] inBuffer = new byte[available];
-		for(int i = 0; i < available; ++i) {
-			inBuffer[i] = (byte) inStream.read();
+		while(count < size) {
+			inBuffer[count++] = (byte) inStream.read();
 		}
 		
 		return inBuffer;

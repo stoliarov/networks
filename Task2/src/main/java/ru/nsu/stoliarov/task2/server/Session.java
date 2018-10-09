@@ -15,7 +15,8 @@ public class Session extends Thread {
 	private static final Logger logger = LogManager.getLogger(Session.class.getName());
 	
 	private LinkedBlockingQueue<Task> tasks;
-	Connection connection;
+	private Connection connection;
+	private Thread speedMeasurer;
 	
 	private long fileSize;      // max 1 099 511 627 776 byte
 	private String fileName;    // max 4096 byte
@@ -37,6 +38,7 @@ public class Session extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 			sendResult(false);
+			speedMeasurer.interrupt();
 			connection.closeConnection();
 		}
 	}
@@ -52,7 +54,7 @@ public class Session extends Thread {
 	private void receiveMetadata() throws IOException {
 		JSONObject metadata = connection.receiveMessage(Event.METADATA).getHead();
 		fileName = (String) metadata.get("name");
-		fileSize = (long) metadata.get("size");
+		fileSize = Long.valueOf(metadata.get("size").toString());
 		
 		JSONObject head = new JSONObject();
 		head.put("event", Event.GOT.toString());
@@ -64,14 +66,14 @@ public class Session extends Thread {
 		long quantityOfDataPiece = fileSize / connection.DATA_SIZE + 1;
 		
 		LinkedBlockingQueue<Long> messageLengths = new LinkedBlockingQueue<Long>(100000);
-		Thread speedMeasurer = new SpeedMeasurer(messageLengths, System.currentTimeMillis());
+		speedMeasurer = new SpeedMeasurer(messageLengths, System.currentTimeMillis());
 		speedMeasurer.start();
 		
 		for(long i = 0; i < quantityOfDataPiece; ++i) {
 			Message message = connection.receiveMessage(Event.DATA);
 			messageLengths.offer(message.length());
 			
-			if(i + 1 != (long) message.getHead().get("number")) {
+			if(i + 1 != Long.valueOf(message.getHead().get("number").toString())) {
 				throw new IOException("Got unexpected number of data piece");
 			}
 			
@@ -94,10 +96,13 @@ public class Session extends Thread {
 	
 	private void sendResult(boolean isSuccess) {
 		Message received = null;
-		try {
-			received = connection.receiveMessage(Event.GET_RESULT);
-		} catch (IOException e) {
-			e.printStackTrace();
+		
+		if(isSuccess) {
+			try {
+				received = connection.receiveMessage(Event.GET_RESULT);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		JSONObject head = new JSONObject();
@@ -107,7 +112,11 @@ public class Session extends Thread {
 		if(isSuccess && null != received) {
 			logger.debug("File received successfully: " + received.getHead().get("name").toString());
 		} else {
-			logger.debug("File is not received: " + head.get("name").toString());
+			if(null == head.get("name")) {
+				logger.debug("File is not received");
+			} else {
+				logger.debug("File is not received: " + head.get("name").toString());
+			}
 		}
 		
 		try {
@@ -115,6 +124,12 @@ public class Session extends Thread {
 		} catch (IOException e) {
 			logger.warn("Sending of result failed");
 			e.printStackTrace();
+		}
+	}
+	
+	private void stopSpeedMeasurer() {
+		if(speedMeasurer != null) {
+			speedMeasurer.interrupt();
 		}
 	}
 }
