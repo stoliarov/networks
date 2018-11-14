@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.nsu.stoliarov.task4.app.JsonParser;
+import ru.nsu.stoliarov.task4.app.Settings;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client implements Runnable {
 	private static Logger logger = LogManager.getLogger(Client.class.getName());
@@ -27,19 +29,30 @@ public class Client implements Runnable {
 	private String token;
 	private long messagesCount;
 	private Timer messagesUpdater;
+	private Timer confirmSender;
 	private boolean authenticateRequired = false;
+	
+	private LinkedBlockingQueue<Task> toSend;
+	private LinkedBlockingQueue<Result> results;
+	private Thread sender;
 	
 	public Client(String uri) {
 		this.client = new DefaultHttpClient();
 		this.uri = uri;
 		this.messagesCount = 0;
 		this.messagesUpdater = new Timer();
+		this.confirmSender = new Timer();
+		this.toSend = new LinkedBlockingQueue<>(10000);
+		this.results = new LinkedBlockingQueue<>(10000);
+		this.sender = new Thread(new Sender(uri, toSend, results));
 	}
 	
 	// todo 1) комманды в executeCommand 2) таймер для отправки конфирмов 3) таймер для запросов инфы о смене активности пользователей
 	
 	@Override
 	public void run() {
+		sender.start();
+		
 		while(200 != login()) {
 		}
 		waitForCommand();
@@ -66,12 +79,14 @@ public class Client implements Runnable {
 		} else if(command.length() > 4 && command.substring(0, 5).equals("/exit")) {
 			int statusCode = logout();
 			if(200 == statusCode) {
-				messagesUpdater.cancel();
+				endSession();
 				while(200 != login()) {}
+				
 			} else if(403 == statusCode) {
-				messagesUpdater.cancel();
+				endSession();
 				System.out.println("А у вас как раз токен просрочен. Так что вы успешно вышли");
 				while(200 != login()) {}
+				
 			} else {
 				System.out.println("Не удалось выполнить команду");
 			}
@@ -92,6 +107,20 @@ public class Client implements Runnable {
 		System.out.println("/exit - выйти");
 		System.out.println("/write <some_message_text> - отправить сообщение");
 		System.out.println("/help - показать список доступных комманд");
+	}
+	
+	private void endSession() {
+		messagesUpdater.cancel();
+		confirmSender.cancel();
+		messagesUpdater = new Timer();
+		confirmSender = new Timer();
+		authenticateRequired = true;
+	}
+	
+	private void startSession() {
+		authenticateRequired = false;
+		messagesUpdater.schedule(new ShowNewMessages(), 500, 500);
+		confirmSender.schedule(new ConfirmationSending(), Settings.CONFIRMATION_TIMEOUT, Settings.CONFIRMATION_TIMEOUT);
 	}
 	
 	private int updateMessagesCount() {
@@ -164,43 +193,19 @@ public class Client implements Runnable {
 		System.out.println("<Получено сообщение \"" + message + "\" от " + author + ">");
 	}
 	
-	private int login() {
+	private int login() throws InterruptedException {
 		System.out.println("Введите ваше имя для входа в чат:");
 		Scanner scanner = new Scanner(System.in);
 		String username = scanner.nextLine();
 		
-		HttpPost postRequest = new HttpPost(uri + "/login");
-		try {
-			StringEntity input = new StringEntity("{\"username\":\"" + username + "\"}", "UTF-8");
-			input.setContentType("application/json");
-			postRequest.addHeader("Authorization", "Token ");
-			postRequest.setEntity(input);
-			
-			HttpResponse response = client.execute(postRequest);
-			
-			String body = readBody(response);
-			
-			if(401 == response.getStatusLine().getStatusCode()) {
-				System.out.println("Выбранное имя уже занято");
-				return 401;
-			} else if(200 != response.getStatusLine().getStatusCode()) {
-				return innerError(response);
-			}
-			
-			JSONObject bodyJson = JsonParser.getJSONbyString(body);
-			token = (String) bodyJson.get("token");
-			
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		toSend.offer(new Task(TaskName.LOGIN.toString(), username));
+		Result result = results.take();
+		
+		if(200 == result.getStatusCode()) {
+			startSession();
 		}
 		
-		System.out.println("Авторизация прошла успешно");
-		messagesUpdater = new Timer();
-		messagesUpdater.schedule(new ShowNewMessages(), 500, 500);
-		
-		return 200;
+		return result.getStatusCode();
 	}
 	
 	private int logout() {
@@ -208,7 +213,6 @@ public class Client implements Runnable {
 		try {
 			postRequest.addHeader("Authorization", "Token " + token);
 			HttpResponse response = client.execute(postRequest);
-			BufferedReader reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
 			String body = readBody(response);
 			
 			int statusCode = checkStatusCode(response);
@@ -227,32 +231,30 @@ public class Client implements Runnable {
 		return 200;
 	}
 	
-	private String readBody(HttpResponse response) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader((response.getEntity().getContent())));
-		String output;
-		StringBuilder builder = new StringBuilder();
-		while((output = reader.readLine()) != null) {
-			builder.append(output);
+	private int sendConfirm() {
+		HttpPost postRequest = new HttpPost(uri + "/confirm");
+		try {
+			StringEntity input = new StringEntity("{\"confirm\":\" \"}", "UTF-8");
+			input.setContentType("application/json");
+			postRequest.addHeader("Authorization", "Token " + token);
+			postRequest.setEntity(input);
+			
+			HttpResponse response = client.execute(postRequest);
+			
+			String body = readBody(response);
+			
+			int statusCode = checkStatusCode(response);
+			if(200 != statusCode) {
+				return statusCode;
+			}
+			
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		logger.debug("Получено от сервера: " + builder.toString() + " "
-				+ response.getStatusLine().getStatusCode() + " " + response.getAllHeaders());
 		
-		return builder.toString();
-	}
-	
-	private int checkStatusCode(HttpResponse response) {
-		if(403 == response.getStatusLine().getStatusCode()) {
-			System.out.println("Требуется повторная аутентификация");
-			return 403;
-		} else if(200 != response.getStatusLine().getStatusCode()) {
-			return innerError(response);
-		}
-		return response.getStatusLine().getStatusCode();
-	}
-	
-	private int innerError(HttpResponse response) {
-		System.out.println("Возникла внутренняя ошибка: " + response.getStatusLine().getStatusCode());
-		return response.getStatusLine().getStatusCode();
+		return 200;
 	}
 	
 	private class ShowNewMessages extends TimerTask {
@@ -261,16 +263,24 @@ public class Client implements Runnable {
 			long oldMessagesCount = messagesCount;
 			int statusCode = updateMessagesCount();
 			if(200 != statusCode) {
-				messagesUpdater.cancel();
-				authenticateRequired = true;
+				endSession();
 				System.out.println("Не удалось получить messagesCount у сервера. Вывод новых сообщений приостановлен");
 			} else if(oldMessagesCount < messagesCount){
 				if(200 != showMessages(oldMessagesCount, messagesCount)) {
-					authenticateRequired = true;
-					messagesUpdater.cancel();
+					endSession();
 					System.out.println("Не удалось получить новые сообщения. Вывод сообщений приостановлен");
 				}
 			}
+		}
+	}
+	
+	private class ConfirmationSending extends TimerTask {
+		@Override
+		public void run() {
+//			int statusCode = sendConfirm();
+//			if(200 != statusCode) {
+//				endSession();
+//			}
 		}
 	}
 }

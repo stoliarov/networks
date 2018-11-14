@@ -367,6 +367,7 @@ public class Server {
 				exchange.getResponseSender().send("Bad Request");
 			} else {
 				actualTokens.get(getTokenByExchange(exchange)).setConfirmationTime(System.currentTimeMillis());
+				exchange.setStatusCode(200);
 			}
 		}
 	}
