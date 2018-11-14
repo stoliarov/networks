@@ -42,6 +42,11 @@ public class Server {
 		actualIDs = new HashMap<>();
 		messages = new HashMap<>();
 		
+		// todo фабрика комманд для парсинга path либо паттерн command (в фабрике)
+		// todo сделать UserService чтобы в сервере не дергать мапы
+		// todo сделать TokenService
+		// todo почитай про jackson, мб будешь парсить String с json в объект класса
+		
 		usersListUpdater = new Timer();
 		usersListUpdater.schedule(new ListOfUsersUpdating(), Settings.CONFIRMATION_TIMEOUT, Settings.CONFIRMATION_TIMEOUT);
 		
@@ -52,32 +57,32 @@ public class Server {
 				.setServerOption(UndertowOptions.REQUEST_PARSE_TIMEOUT, 100000)
 				.setServerOption(UndertowOptions.URL_CHARSET, "UTF-8")
 				.setServerOption(UndertowOptions.DECODE_URL, false)
-				.setHandler(new BlockingHandler(new  HttpHandler() {
-					@Override
-					public void handleRequest(final HttpServerExchange exchange) throws Exception {
-						if(exchange.getRequestPath().equals("/login")) {
-							loginMapping(exchange);
-							
-						} else if(exchange.getRequestPath().equals("/logout")) {
-							logoutMapping(exchange);
-							
-						} else if(exchange.getRequestPath().equals("/messages")) {
-							messagesMapping(exchange);
-							
-						} else if(exchange.getRequestPath().equals("/messages/size")) {
-							messagesSizeMapping(exchange);
-							
-						} else if(exchange.getRequestPath().equals("/confirm")) {
-							confirmMapping(exchange);
+				.setHandler(new BlockingHandler(exchange -> {
+					if(exchange.getRequestPath().equals("/login")) {
+						loginMapping(exchange);
 						
+					} else if(exchange.getRequestPath().equals("/logout")) {
+						logoutMapping(exchange);
+						
+					} else if(exchange.getRequestPath().equals("/messages")) {
+						messagesMapping(exchange);
+						
+					} else if(exchange.getRequestPath().equals("/messages/size")) {
+						messagesSizeMapping(exchange);
+						
+					} else if(exchange.getRequestPath().equals("/confirm")) {
+						confirmMapping(exchange);
+					
+					} else {
+						List<String> pathItems = URIParser.pathItems(exchange.getRequestPath());
+						if(null != pathItems && pathItems.size() > 0 && pathItems.get(0).equals("/users")) {
+							usersMapping(exchange, pathItems);
 						} else {
-							List<String> pathItems = URIParser.pathItems(exchange.getRequestPath());
-							if(null != pathItems && pathItems.size() > 0 && pathItems.get(0).equals("/users")) {
-								usersMapping(exchange, pathItems);
-							}
+							exchange.setStatusCode(404);
+							exchange.getResponseSender().send("Page not found");
 						}
-						
 					}
+					
 				})).build();
 	}
 	
@@ -472,7 +477,7 @@ public class Server {
 			activeUsers.forEach((k, v) -> {
 				if(System.currentTimeMillis() - v.getConfirmationTime() > Settings.CONFIRMATION_TIMEOUT * 3) {
 					logout(v.getToken());
-					// todo сообщить остальным клиентам, что этот выпал по таймауту
+					// todo выпавшие по таймауту пусть имеют онлайн null
 				}
 			});
 		}

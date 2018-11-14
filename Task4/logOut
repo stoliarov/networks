@@ -1,0 +1,24 @@
+[14/11/18 11:49:21:021 NOVT] DEBUG jboss.logging: Logging Provider: org.jboss.logging.Log4jLoggerProvider
+[14/11/18 11:49:21:021 NOVT] DEBUG io.undertow: starting undertow server io.undertow.Undertow@3581c5f3
+[14/11/18 11:49:21:021 NOVT]  INFO org.xnio: XNIO version 3.3.8.Final
+[14/11/18 11:49:21:021 NOVT]  INFO xnio.nio: XNIO NIO Implementation Version 3.3.8.Final
+[14/11/18 11:49:22:022 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-1', selector sun.nio.ch.EPollSelectorImpl@582f3088
+[14/11/18 11:49:22:022 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-2', selector sun.nio.ch.EPollSelectorImpl@15198ef6
+[14/11/18 11:49:22:022 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-3', selector sun.nio.ch.EPollSelectorImpl@5763dd77
+[14/11/18 11:49:22:022 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-4', selector sun.nio.ch.EPollSelectorImpl@7c1e2679
+[14/11/18 11:49:22:022 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 Accept', selector sun.nio.ch.EPollSelectorImpl@6eafef33
+[14/11/18 11:49:22:022 NOVT] DEBUG io.undertow: Configuring listener with protocol HTTP for interface localhost and port 8080
+[14/11/18 11:49:38:038 NOVT] DEBUG server.Server: Unexpected token: bfa18ede-5604-4759-814f-f017b60432d2 Expected: {7c3e7260-80cf-4a4e-9c0a-1bf9d02861b2=ru.nsu.stoliarov.task4.app.server.User@2cba5c4b}
+[14/11/18 11:50:01:001 NOVT] DEBUG server.Server: Previous token of user Ilya: 7c3e7260-80cf-4a4e-9c0a-1bf9d02861b2
+[14/11/18 11:50:01:001 NOVT] DEBUG server.Server: New token of user Ilya: e6d855d8-7920-4280-89e2-e922740bd6eb
+[14/11/18 11:50:03:003 NOVT] DEBUG server.Server: Unexpected token: 7c3e7260-80cf-4a4e-9c0a-1bf9d02861b2 Expected: {e6d855d8-7920-4280-89e2-e922740bd6eb=ru.nsu.stoliarov.task4.app.server.User@2cba5c4b}
+[14/11/18 11:55:35:035 NOVT] DEBUG jboss.logging: Logging Provider: org.jboss.logging.Log4jLoggerProvider
+[14/11/18 11:55:35:035 NOVT] DEBUG io.undertow: starting undertow server io.undertow.Undertow@3581c5f3
+[14/11/18 11:55:35:035 NOVT]  INFO org.xnio: XNIO version 3.3.8.Final
+[14/11/18 11:55:35:035 NOVT]  INFO xnio.nio: XNIO NIO Implementation Version 3.3.8.Final
+[14/11/18 11:55:35:035 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-1', selector sun.nio.ch.EPollSelectorImpl@5763dd77
+[14/11/18 11:55:35:035 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-2', selector sun.nio.ch.EPollSelectorImpl@7c1e2679
+[14/11/18 11:55:35:035 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-4', selector sun.nio.ch.EPollSelectorImpl@6eafef33
+[14/11/18 11:55:35:035 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 Accept', selector sun.nio.ch.EPollSelectorImpl@7a38c71b
+[14/11/18 11:55:35:035 NOVT] DEBUG xnio.nio: Started channel thread 'XNIO-1 I/O-3', selector sun.nio.ch.EPollSelectorImpl@32917ec3
+[14/11/18 11:55:35:035 NOVT] DEBUG io.undertow: Configuring listener with protocol HTTP for interface localhost and port 8080
