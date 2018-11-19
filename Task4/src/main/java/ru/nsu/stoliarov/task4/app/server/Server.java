@@ -1,8 +1,9 @@
 package ru.nsu.stoliarov.task4.app.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.undertow.Undertow;
 import io.undertow.UndertowOptions;
-import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.util.Headers;
@@ -16,205 +17,139 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-public class Server {
-	private static final int DEFAULT_OFFSET = 0;
-	private static final int DEFAULT_COUNT = 3;
-	private static final int MAX_COUNT = 100;
+public class Server implements Runnable {
+	private final int DEFAULT_OFFSET = 0;
+	private final int DEFAULT_COUNT = 3;
+	private final int MAX_COUNT = 100;
 	
-	private static Logger logger = LogManager.getLogger(Server.class.getName());
-	private static boolean comparatorFlag;
-	private static Map<String, User> users;
-	private static ConcurrentMap<String, User> activeUsers;
-	private static Map<String, User> actualTokens;
-	private static Map<Long, User> actualIDs;
-	private static Map<Long, Message> messages;
-	private static Timer usersListUpdater;
+	private Logger logger = LogManager.getLogger(Server.class.getName());
+	Map<String, Map<String, MappingCommand>> mapping;
+	private Undertow undertow;
+	private boolean comparatorFlag;
+	private UserService userService;
+	private MessageService messageService;
+	private UserActivityHistory userActivityHistory;
+//	private ObjectMapper mapper;
 	
-	private Server() {}
-	
-	public static Undertow createServer() {
-		users = new HashMap<>();
-		activeUsers = new ConcurrentHashMap<>();
-		actualTokens = new HashMap<>();
-		actualIDs = new HashMap<>();
-		messages = new HashMap<>();
+	public Server() {
+//		mapper = new ObjectMapper();
+		userService = new UserService();
+		messageService = new MessageService();
+		userActivityHistory = new UserActivityHistory();
+		mapping = new HashMap<>();
+		fillMapping();
 		
-		// todo фабрика комманд для парсинга path либо паттерн command (в фабрике)
-		// todo сделать UserService чтобы в сервере не дергать мапы
-		// todo сделать TokenService
-		// todo почитай про jackson, мб будешь парсить String с json в объект класса
+		// todo Вопрос: как с помощью jackson каждый раз при парсинге выбирать использовать какое-либо поле в классе или нет?
 		
-		usersListUpdater = new Timer();
+		Timer usersListUpdater = new Timer();
 		usersListUpdater.schedule(new ListOfUsersUpdating(), Settings.CONFIRMATION_TIMEOUT, Settings.CONFIRMATION_TIMEOUT);
-		
-		return Undertow.builder()
-				.addHttpListener(8080, "localhost")
+	}
+	
+	@Override
+	public void run() {
+		undertow = Undertow.builder()
+				.addHttpListener(Settings.serverPort, Settings.serverHost)
 				.setServerOption(UndertowOptions.IDLE_TIMEOUT, 100000)
 				.setServerOption(UndertowOptions.NO_REQUEST_TIMEOUT, 100000)
 				.setServerOption(UndertowOptions.REQUEST_PARSE_TIMEOUT, 100000)
 				.setServerOption(UndertowOptions.URL_CHARSET, "UTF-8")
 				.setServerOption(UndertowOptions.DECODE_URL, false)
 				.setHandler(new BlockingHandler(exchange -> {
-					if(exchange.getRequestPath().equals("/login")) {
-						loginMapping(exchange);
-						
-					} else if(exchange.getRequestPath().equals("/logout")) {
-						logoutMapping(exchange);
-						
-					} else if(exchange.getRequestPath().equals("/messages")) {
-						messagesMapping(exchange);
-						
-					} else if(exchange.getRequestPath().equals("/messages/size")) {
-						messagesSizeMapping(exchange);
-						
-					} else if(exchange.getRequestPath().equals("/confirm")) {
-						confirmMapping(exchange);
-					
-					} else {
-						List<String> pathItems = URIParser.pathItems(exchange.getRequestPath());
-						if(null != pathItems && pathItems.size() > 0 && pathItems.get(0).equals("/users")) {
-							usersMapping(exchange, pathItems);
+					String path = URIParser.extractPathBeforeNumbers(exchange.getRequestPath());
+					if(mapping.containsKey(path)) {
+						if(mapping.get(path).containsKey(exchange.getRequestMethod().toString())) {
+							mapping.get(path).get(exchange.getRequestMethod().toString()).execute(exchange);
 						} else {
-							exchange.setStatusCode(404);
-							exchange.getResponseSender().send("Page not found");
+							exchange.setStatusCode(405);
+							exchange.getResponseSender().send("Method Not Allowed");
 						}
-					}
-					
-				})).build();
-	}
-	
-	private static void loginMapping(final HttpServerExchange exchange) {
-		if(!isExpectedMethod(exchange, "POST")) {
-			exchange.setStatusCode(405);
-			exchange.getResponseSender().send("Method Not Allowed");
-			return;
-		}
-		
-		Map<String, String> headers = new HashMap<>();
-		headers.put("Content-Type", "application/json");
-		if(!isExpectedHeaders(exchange, headers)) {
-			exchange.setStatusCode(400);
-			exchange.getResponseSender().send("Bad Request");
-			return;
-		}
-		
-		
-		JSONObject bodyJson = JsonParser.getJSONbyString(readBody(exchange));
-		if(!bodyJson.containsKey("username") || "".equals((String) bodyJson.get("username"))) {
-			exchange.setStatusCode(400);
-			exchange.getResponseSender().send("Bad Request");
-			return;
-		}
-		
-		String username = (String) bodyJson.get("username");
-		authorize(exchange, username);
-	}
-	
-	private static void authorize(HttpServerExchange exchange, String username) {
-		if(users.containsKey(username)) {
-			if(users.get(username).isOnline()) {
-				exchange.setStatusCode(401);
-				exchange.getResponseHeaders().put(Headers.WWW_AUTHENTICATE, "Token realm='Username is already in use'");
-				return;
-			} else {
-				User user = users.get(username);
-				user.setOnline(true);
-				user.setConfirmationTime(System.currentTimeMillis());
-				activeUsers.put(username, user);
-			}
-		} else {
-			User user = new User(username, users.size());
-			user.setConfirmationTime(System.currentTimeMillis());
-			users.put(username, user);
-			activeUsers.put(username, user);
-			actualTokens.put(user.getToken(), user);
-			actualIDs.put(user.getId(), user);
-		}
-		
-		JSONObject responseJson = new JSONObject();
-		responseJson.put("id", users.get(username).getId());
-		responseJson.put("username", username);
-		responseJson.put("online", users.get(username).isOnline());
-		responseJson.put("token", users.get(username).getToken());
-		
-		exchange.setStatusCode(200);
-		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-		exchange.getResponseSender().send(responseJson.toString());
-	}
-	
-	private static void logoutMapping(final HttpServerExchange exchange) {
-		if(!isExpectedMethod(exchange, "POST")) {
-			exchange.setStatusCode(405);
-			exchange.getResponseSender().send("Method Not Allowed");
-			return;
-		}
-		
-		if(checkToken(exchange)) {
-			logout(getTokenByExchange(exchange));
-			
-			JSONObject responseJson = new JSONObject();
-			responseJson.put("message", "bye!");
-			
-			exchange.setStatusCode(200);
-			exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-			exchange.getResponseSender().send(responseJson.toString());
-		}
-	}
-	
-	private static void usersMapping(final HttpServerExchange exchange, List<String> pathItems) {
-		if(!isExpectedMethod(exchange, "GET")) {
-			exchange.setStatusCode(405);
-			exchange.getResponseSender().send("Method Not Allowed");
-			return;
-		}
-		
-		if(checkToken(exchange)) {
-			if(1 == pathItems.size()) {
-				sendAllUsersInfo(exchange);
-				
-			} else if(2 == pathItems.size()) {
-				if(URIParser.isNumeric(pathItems.get(1))) {
-					long requiredId = URIParser.longValue(pathItems.get(1));
-					if(actualIDs.containsKey(requiredId)) {
-						sendUserInfo(exchange, requiredId);
-						
 					} else {
 						exchange.setStatusCode(404);
 						exchange.getResponseSender().send("Page not found");
 					}
-				} else {
-					exchange.setStatusCode(404);
-					exchange.getResponseSender().send("Page not found");
-				}
-			} else {
-				exchange.setStatusCode(404);
-				exchange.getResponseSender().send("Page not found");
-			}
-		}
+				})).build();
+		
+		undertow.start();
 	}
 	
-	private static void sendUserInfo(HttpServerExchange exchange, long requiredId) {
+	private void fillMapping() {
+		mapping.put("/login", new HashMap<>());
+		mapping.get("/login").put("POST", new LoginMappingPost());
+		
+		mapping.put("/logout", new HashMap<>());
+		mapping.get("/logout").put("POST", new LogoutMappingPost());
+		
+		mapping.put("/users", new HashMap<>());
+		mapping.get("/users").put("GET", new UsersMappingGet());
+		
+		mapping.put("/messages", new HashMap<>());
+		mapping.get("/messages").put("GET", new MessagesMappingGet());
+		mapping.get("/messages").put("POST", new MessagesMappingPost());
+		
+		mapping.put("/messages/size", new HashMap<>());
+		mapping.get("/messages/size").put("GET", new MessagesSizeMappingGet());
+		
+		mapping.put("/confirm", new HashMap<>());
+		mapping.get("/confirm").put("POST", new ConfirmMappingPost());
+		
+		mapping.put("/users", new HashMap<>());
+		mapping.get("/users").put("GET", new UsersMappingGet());
+		
+		mapping.put("/activity", new HashMap<>());
+		mapping.get("/activity").put("GET", new ActivityMappingGet());
+	}
+	
+	private void authorize(HttpServerExchange exchange, String username) {
+		if(userService.containsUsername(username)) {
+			if(userService.getUserByName(username).isOnline()) {
+				exchange.setStatusCode(401);
+				exchange.getResponseHeaders().put(Headers.WWW_AUTHENTICATE, "Token realm='Username is already in use'");
+				return;
+			} else {
+				User user = userService.getUserByName(username);
+				userService.login(user);
+				user.setConfirmationTime(System.currentTimeMillis());
+			}
+		} else {
+			userService.addUser(username);
+			userService.getUserByName(username).setConfirmationTime(System.currentTimeMillis());
+			userService.login(userService.getUserByName(username));
+		}
+		
 		JSONObject responseJson = new JSONObject();
-		responseJson.put("id", requiredId);
-		responseJson.put("username", actualIDs.get(requiredId).getUsername());
-		responseJson.put("online", actualIDs.get(requiredId).isOnline());
+		responseJson.put("id", userService.getUserByName(username).getId());
+		responseJson.put("username", username);
+		responseJson.put("online", userService.getUserByName(username).isOnline());
+		responseJson.put("token", userService.getUserByName(username).getToken());
+		userActivityHistory.add("Пользователь " + username + " зашел в сеть");
+		responseJson.put("historyKey", userActivityHistory.lastKey());
+		
 		
 		exchange.setStatusCode(200);
 		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
 		exchange.getResponseSender().send(responseJson.toString());
 	}
 	
-	private static void sendAllUsersInfo(HttpServerExchange exchange) {
+	private void sendUserInfo(HttpServerExchange exchange, long requiredId) {
+		JSONObject responseJson = new JSONObject();
+		responseJson.put("id", requiredId);
+		responseJson.put("username", userService.getUserById(requiredId).getUsername());
+		responseJson.put("online", userService.getUserById(requiredId).isOnline());
+		
+		exchange.setStatusCode(200);
+		exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+		exchange.getResponseSender().send(responseJson.toString());
+	}
+	
+	private void sendAllUsersInfo(HttpServerExchange exchange) {
 		JSONObject responseJson = new JSONObject();
 		JSONArray usersJson = new JSONArray();
-		activeUsers.forEach((k, v) -> {
+		userService.getActiveUsers().forEach(entry -> {
 			JSONObject userJson = new JSONObject();
-			userJson.put("id", v.getId());
-			userJson.put("username", v.getUsername());
-			userJson.put("online", v.isOnline());
+			userJson.put("id", entry.getValue().getId());
+			userJson.put("username", entry.getValue().getUsername());
+			userJson.put("online", entry.getValue().isOnline());
 			usersJson.add(userJson);
 		});
 		responseJson.put("users", usersJson);
@@ -224,75 +159,17 @@ public class Server {
 		exchange.getResponseSender().send(responseJson.toString());
 	}
 	
-	private static void messagesMapping(final HttpServerExchange exchange) {
-		if(exchange.getRequestMethod().toString().equals("POST")) {
-			receiveMessage(exchange);
-		} else if(exchange.getRequestMethod().toString().equals("GET")) {
-			if(checkToken(exchange)) {
-				showMessages(exchange);
-			}
-		} else {
-			exchange.setStatusCode(405);
-			exchange.getResponseSender().send("Method Not Allowed");
-		}
-	}
-	
-	private static void showMessages(HttpServerExchange exchange) {
-		long offset = DEFAULT_OFFSET;
-		long count = DEFAULT_COUNT;
-		
-		if(exchange.getQueryParameters().containsKey("offset")) {
-			String offsetString = exchange.getQueryParameters().get("offset").toString();
-			if(offsetString.length() > 2) {
-				offsetString = offsetString.substring(1, offsetString.length() - 1);
-				try {
-					offset = Long.parseLong(offsetString);
-				} catch (IndexOutOfBoundsException e) {
-					// то юзаем значение по умолчанию
-				}
-			}
-		}
-		if(exchange.getQueryParameters().containsKey("count")) {
-			String countString = exchange.getQueryParameters().get("count").toString();
-			if(countString.length() > 2) {
-				countString = countString.substring(1, countString.length() - 1);
-				try {
-					count = Long.parseLong(countString);
-				} catch (IndexOutOfBoundsException e) {
-					// юзаем значение по умолчанию
-				}
-			}
-		}
-		
-		if(offset < 0) {
-			offset = DEFAULT_OFFSET;
-		}
-		if(count < 0) {
-			count = DEFAULT_COUNT;
-		}
-		if(count > MAX_COUNT) {
-			count = MAX_COUNT;
-		}
-		
-		sendMessages(exchange, offset, count);
-	}
-	
-	private static void sendMessages(HttpServerExchange exchange, long offset, long count) {
+	private void sendMessages(HttpServerExchange exchange, int offset, int count) {
 		JSONObject responseJson = new JSONObject();
 		JSONArray messagesJson = new JSONArray();
 		
-		for(long i = offset; i < messages.size(); ++i) {
+		messageService.getMessages(offset, count).forEach(message -> {
 			JSONObject messageJson = new JSONObject();
-			messageJson.put("id", messages.get(i).getId());
-			messageJson.put("message", messages.get(i).getText());
-			messageJson.put("author", messages.get(i).getAuthorName());
+			messageJson.put("id", message.getId());
+			messageJson.put("message", message.getText());
+			messageJson.put("author", message.getAuthorName());
 			messagesJson.add(messageJson);
-			
-			--count;
-			if(count <= 0) {
-				break;
-			}
-		}
+		});
 		
 		responseJson.put("messages", messagesJson);
 		
@@ -301,89 +178,7 @@ public class Server {
 		exchange.getResponseSender().send(responseJson.toString());
 	}
 	
-	private static void receiveMessage(HttpServerExchange exchange) {
-		Map<String, String> headers = new HashMap<>();
-		headers.put("Content-Type", "application/json");
-		if(!isExpectedHeaders(exchange, headers)) {
-			exchange.setStatusCode(400);
-			exchange.getResponseSender().send("Bad Request");
-			return;
-		}
-		
-		if(checkToken(exchange)) {
-			JSONObject bodyJson = JsonParser.getJSONbyString(readBody(exchange));
-			if(!bodyJson.containsKey("message") || "".equals((String) bodyJson.get("message"))) {
-				exchange.setStatusCode(400);
-				exchange.getResponseSender().send("Bad Request");
-			} else {
-				Message message = new Message(messages.size(),
-						bodyJson.get("message").toString(),
-						actualTokens.get(getTokenByExchange(exchange)).getUsername()
-				);
-				messages.put((long) messages.size(), message);
-				
-				JSONObject responseJson = new JSONObject();
-				responseJson.put("id", message.getId());
-				responseJson.put("message", message.getText());
-				
-				exchange.setStatusCode(200);
-				exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-				exchange.getResponseSender().send(responseJson.toString());
-			}
-		}
-	}
-	
-	private static void messagesSizeMapping(HttpServerExchange exchange) {
-		if(!isExpectedMethod(exchange, "GET")) {
-			exchange.setStatusCode(405);
-			exchange.getResponseSender().send("Method Not Allowed");
-			return;
-		}
-		
-		if(checkToken(exchange)) {
-			JSONObject responseJson = new JSONObject();
-			responseJson.put("size", messages.size());
-			
-			exchange.setStatusCode(200);
-			exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-			exchange.getResponseSender().send(responseJson.toString());
-		}
-	}
-	
-	private static void confirmMapping(HttpServerExchange exchange) {
-		if(!isExpectedMethod(exchange, "POST")) {
-			exchange.setStatusCode(405);
-			exchange.getResponseSender().send("Method Not Allowed");
-			return;
-		}
-		
-		Map<String, String> headers = new HashMap<>();
-		headers.put("Content-Type", "application/json");
-		if(!isExpectedHeaders(exchange, headers)) {
-			exchange.setStatusCode(400);
-			exchange.getResponseSender().send("Bad Request");
-			return;
-		}
-		
-		if(checkToken(exchange)) {
-			JSONObject bodyJson = JsonParser.getJSONbyString(readBody(exchange));
-			if(!bodyJson.containsKey("confirm")) {
-				exchange.setStatusCode(400);
-				exchange.getResponseSender().send("Bad Request");
-			} else {
-				actualTokens.get(getTokenByExchange(exchange)).setConfirmationTime(System.currentTimeMillis());
-				exchange.setStatusCode(200);
-			}
-		}
-	}
-	
-	private static void logout(String token) {
-		actualTokens.get(token).setOnline(false);
-		activeUsers.remove(actualTokens.get(token).getUsername());
-		updateToken(actualTokens.get(token));
-	}
-	
-	private static String readBody(final HttpServerExchange exchange) {
+	private String readBody(final HttpServerExchange exchange) {
 		BufferedReader reader = null;
 		StringBuilder builder = new StringBuilder();
 		
@@ -392,38 +187,31 @@ public class Server {
 			reader = new BufferedReader(new InputStreamReader(exchange.getInputStream()));
 			
 			String line;
-			while((line = reader.readLine()) != null ) {
+			while((line = reader.readLine()) != null) {
 				builder.append(line);
 			}
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			if(reader != null) {
 				try {
 					reader.close();
-				} catch(IOException e) {
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
 		
-		return builder.toString( );
+		return builder.toString();
 	}
 	
-	private static String getTokenByExchange(final HttpServerExchange exchange) {
+	private String getTokenByExchange(final HttpServerExchange exchange) {
 		return exchange.getRequestHeaders().get(Headers.AUTHORIZATION.toString()).toString().substring(7, 43);
 	}
 	
-	private static void updateToken(User user) {
-		logger.debug("Previous token of user " + user.getUsername() + ": " + user.getToken());
-		actualTokens.remove(user.getToken());
-		user.updateToken();
-		actualTokens.put(user.getToken(), user);
-		logger.debug("New token of user " + user.getUsername() + ": " + user.getToken());
-	}
-	
-	private static boolean checkToken(final HttpServerExchange exchange) {
+	private boolean checkToken(final HttpServerExchange exchange) {
 		if(!exchange.getRequestHeaders().contains("Authorization")
+				|| exchange.getRequestHeaders().get(Headers.AUTHORIZATION.toString()).toString().length() < 43
 				|| !exchange.getRequestHeaders().get(Headers.AUTHORIZATION.toString()).toString().substring(0, 6).equals("[Token")) {
 			
 			
@@ -431,11 +219,11 @@ public class Server {
 			exchange.getResponseSender().send("Unauthorized");
 			return false;
 			
-		} else if(!actualTokens.containsKey(exchange.getRequestHeaders().get(Headers.AUTHORIZATION.toString())
+		} else if(!userService.containsToken(exchange.getRequestHeaders().get(Headers.AUTHORIZATION.toString())
 				.toString().substring(7, 43))) {
 			
 			logger.debug("Unexpected token: " + exchange.getRequestHeaders().get(Headers.AUTHORIZATION.toString())
-					.toString().substring(7, 43) + " Expected: " + actualTokens);
+					.toString().substring(7, 43));
 			
 			exchange.setStatusCode(403);
 			exchange.getResponseSender().send("Forbidden");
@@ -446,7 +234,7 @@ public class Server {
 		}
 	}
 	
-	private static boolean isExpectedHeaders(final HttpServerExchange exchange, Map<String, String> expectedHeaders) {
+	private boolean isExpectedHeaders(final HttpServerExchange exchange, Map<String, String> expectedHeaders) {
 		comparatorFlag = false;
 		expectedHeaders.forEach((k, v) -> {
 			if(!exchange.getRequestHeaders().contains(k) || !exchange.getRequestHeaders().get(k).toString().equals("[" + v + "]")) {
@@ -462,7 +250,7 @@ public class Server {
 		}
 	}
 	
-	private static boolean isExpectedMethod(final HttpServerExchange exchange, String expectedMethod) {
+	private boolean isExpectedMethod(final HttpServerExchange exchange, String expectedMethod) {
 		if(!expectedMethod.equals(exchange.getRequestMethod().toString())) {
 			logger.debug("Unexpected request method: " + exchange.getRequestMethod() + ". Expected: " + expectedMethod);
 			return false;
@@ -471,13 +259,229 @@ public class Server {
 		}
 	}
 	
-	private static class ListOfUsersUpdating extends TimerTask {
+	private class LoginMappingPost implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Content-Type", "application/json");
+			if(!isExpectedHeaders(exchange, headers)) {
+				exchange.setStatusCode(400);
+				exchange.getResponseSender().send("Bad Request");
+				return;
+			}
+			
+			JSONObject bodyJson = JsonParser.getJSONbyString(readBody(exchange));
+			if(null == bodyJson || !bodyJson.containsKey("username") || "".equals((String) bodyJson.get("username"))) {
+				exchange.setStatusCode(400);
+				exchange.getResponseSender().send("Bad Request");
+				return;
+			}
+			
+			String username = (String) bodyJson.get("username");
+			authorize(exchange, username);
+		}
+	}
+	
+	private class LogoutMappingPost implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			if(checkToken(exchange)) {
+				User user = userService.getUserByToken(getTokenByExchange(exchange));
+				userService.logout(user);
+				
+				JSONObject responseJson = new JSONObject();
+				responseJson.put("message", "bye!");
+				
+				userActivityHistory.add("Пользователь " + user.getUsername() + " вышел из сети");
+				
+				exchange.setStatusCode(200);
+				exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+				exchange.getResponseSender().send(responseJson.toString());
+			}
+		}
+	}
+	
+	private class UsersMappingGet implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			List<String> pathItems = URIParser.pathItems(exchange.getRequestPath());
+			
+			if(checkToken(exchange)) {
+				if(1 == pathItems.size()) {
+					sendAllUsersInfo(exchange);
+					
+				} else if(2 == pathItems.size()) {
+					if(URIParser.isNumeric(pathItems.get(1))) {
+						long requiredId = URIParser.longValue(pathItems.get(1));
+						if(userService.containsId(requiredId)) {
+							sendUserInfo(exchange, requiredId);
+							
+						} else {
+							exchange.setStatusCode(404);
+							exchange.getResponseSender().send("Page not found");
+						}
+					} else {
+						exchange.setStatusCode(404);
+						exchange.getResponseSender().send("Page not found");
+					}
+				} else {
+					exchange.setStatusCode(404);
+					exchange.getResponseSender().send("Page not found");
+				}
+			}
+		}
+	}
+	
+	private class MessagesMappingGet implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			if(checkToken(exchange)) {
+				int offset = DEFAULT_OFFSET;
+				int count = DEFAULT_COUNT;
+				
+				if(exchange.getQueryParameters().containsKey("offset")) {
+					String offsetString = exchange.getQueryParameters().get("offset").toString();
+					if(offsetString.length() > 2) {
+						offsetString = offsetString.substring(1, offsetString.length() - 1);
+						try {
+							offset = Integer.parseInt(offsetString);
+						} catch (IndexOutOfBoundsException e) {
+							// юзаем значение по умолчанию
+						}
+					}
+				}
+				if(exchange.getQueryParameters().containsKey("count")) {
+					String countString = exchange.getQueryParameters().get("count").toString();
+					if(countString.length() > 2) {
+						countString = countString.substring(1, countString.length() - 1);
+						try {
+							count = Integer.parseInt(countString);
+						} catch (IndexOutOfBoundsException e) {
+							// юзаем значение по умолчанию
+						}
+					}
+				}
+				
+				if(offset < 0) {
+					offset = DEFAULT_OFFSET;
+				}
+				if(count < 0) {
+					count = DEFAULT_COUNT;
+				}
+				if(count > MAX_COUNT) {
+					count = MAX_COUNT;
+				}
+				
+				sendMessages(exchange, offset, count);
+			}
+		}
+	}
+	
+	private class MessagesMappingPost implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Content-Type", "application/json");
+			if(!isExpectedHeaders(exchange, headers)) {
+				exchange.setStatusCode(400);
+				exchange.getResponseSender().send("Bad Request");
+				return;
+			}
+			
+			if(checkToken(exchange)) {
+				JSONObject bodyJson = JsonParser.getJSONbyString(readBody(exchange));
+				if(null == bodyJson || !bodyJson.containsKey("message") || "".equals((String) bodyJson.get("message"))) {
+					exchange.setStatusCode(400);
+					exchange.getResponseSender().send("Bad Request");
+				} else {
+					Message message = messageService.addMessage(bodyJson.get("message").toString(),
+							userService.getUserByToken(getTokenByExchange(exchange)).getUsername());
+					
+					JSONObject responseJson = new JSONObject();
+					responseJson.put("id", message.getId());
+					responseJson.put("message", message.getText());
+					
+					exchange.setStatusCode(200);
+					exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+					exchange.getResponseSender().send(responseJson.toString());
+				}
+			}
+		}
+	}
+	
+	private class MessagesSizeMappingGet implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			if(checkToken(exchange)) {
+				JSONObject responseJson = new JSONObject();
+				responseJson.put("size", messageService.messagesCount());
+				
+				exchange.setStatusCode(200);
+				exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+				exchange.getResponseSender().send(responseJson.toString());
+			}
+		}
+	}
+	
+	private class ConfirmMappingPost implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			Map<String, String> headers = new HashMap<>();
+			headers.put("Content-Type", "application/json");
+			if(!isExpectedHeaders(exchange, headers)) {
+				exchange.setStatusCode(400);
+				exchange.getResponseSender().send("Bad Request");
+				return;
+			}
+			
+			if(checkToken(exchange)) {
+				JSONObject bodyJson = JsonParser.getJSONbyString(readBody(exchange));
+				if(null == bodyJson || !bodyJson.containsKey("confirm")) {
+					exchange.setStatusCode(400);
+					exchange.getResponseSender().send("Bad Request");
+				} else {
+					userService.getUserByToken(getTokenByExchange(exchange)).setConfirmationTime(System.currentTimeMillis());
+					exchange.setStatusCode(200);
+				}
+			}		}
+	}
+	
+	private class ActivityMappingGet implements MappingCommand {
+		@Override
+		public void execute(HttpServerExchange exchange) {
+			if(checkToken(exchange)) {
+				JSONObject responseJson = new JSONObject();
+				JSONArray activitiesJson = new JSONArray();
+				String key = exchange.getQueryParameters().get("key").toString();
+				if(key.length() > 37) {
+					key = key.substring(1, 37);
+				}
+				List<String> activities = userActivityHistory.subHistory(key);
+				
+				activities.forEach(activity -> {
+					JSONObject activityJson = new JSONObject();
+					activityJson.put("activity", activity);
+					activitiesJson.add(activityJson);
+				});
+				
+				responseJson.put("activities", activitiesJson);
+				responseJson.put("historyKey", userActivityHistory.lastKey());
+				
+				exchange.setStatusCode(200);
+				exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
+				exchange.getResponseSender().send(responseJson.toString());
+			}
+		}
+	}
+	
+	private class ListOfUsersUpdating extends TimerTask {
 		@Override
 		public void run() {
-			activeUsers.forEach((k, v) -> {
-				if(System.currentTimeMillis() - v.getConfirmationTime() > Settings.CONFIRMATION_TIMEOUT * 3) {
-					logout(v.getToken());
-					// todo выпавшие по таймауту пусть имеют онлайн null
+			userService.getActiveUsers().forEach(entry -> {
+				if(System.currentTimeMillis() - entry.getValue().getConfirmationTime() > Settings.CONFIRMATION_TIMEOUT * 3) {
+					User user = userService.getUserByToken(entry.getValue().getToken());
+					userService.logout(user);
+					userActivityHistory.add("Пользователь " + user.getUsername() + " выпал по таймауту");
 				}
 			});
 		}

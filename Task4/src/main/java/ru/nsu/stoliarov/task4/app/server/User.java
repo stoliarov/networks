@@ -56,4 +56,9 @@ public class User {
 	public void setConfirmationTime(long confirmationTime) {
 		this.confirmationTime = confirmationTime;
 	}
+	
+	@Override
+	public String toString() {
+		return username + " (id = " + id + ", token = " + token + ")";
+	}
 }

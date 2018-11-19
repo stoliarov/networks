@@ -1,44 +1,35 @@
 package ru.nsu.stoliarov.task4.app.client;
 
+import ru.nsu.stoliarov.task4.app.client.commands.Command;
+
 public class Task {
-	private String taskName;
-	private String data;
-	private long offset;
-	private long count;
+	private Command command;
+	private CommandParams params;
+	private boolean isUserTask;
 	
-	public Task(String taskName) {
-		this.taskName = taskName;
+	public Task(Command command, CommandParams params, boolean isUserTask) {
+		this.command = command;
+		this.isUserTask = isUserTask;
+		this.params = params;
 	}
 	
-	public Task(String taskName,String data) {
-		this.taskName = taskName;
-		this.data = data;
+	public boolean isUserTask() {
+		return isUserTask;
 	}
 	
-	public Task(String taskName, long offset) {
-		this.taskName = taskName;
-		this.offset = offset;
+	public Command getCommand() {
+		return command;
 	}
 	
-	public Task(String taskName, long offset, long count) {
-		this.taskName = taskName;
-		this.offset = offset;
-		this.count = count;
+	public void setCommand(Command command) {
+		this.command = command;
 	}
 	
-	public String getTaskName() {
-		return taskName;
+	public CommandParams getParams() {
+		return params;
 	}
 	
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
-	
-	public String getData() {
-		return data;
-	}
-	
-	public void setData(String data) {
-		this.data = data;
+	public void setParams(CommandParams params) {
+		this.params = params;
 	}
 }

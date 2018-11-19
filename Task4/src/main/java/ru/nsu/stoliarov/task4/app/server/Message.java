@@ -5,6 +5,9 @@ public class Message {
 	private String text;
 	private String authorName;
 	
+	public Message() {
+	}
+	
 	public Message(long id, String text, String authorName) {
 		this.id = id;
 		this.text = text;

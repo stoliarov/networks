@@ -28,6 +28,22 @@ public class URIParser {
 		return pathItems;
 	}
 	
+	public static String extractPathBeforeNumbers(String path) {
+		List<String> pathItems = pathItems(path);
+		StringBuilder builder = new StringBuilder();
+		if(null == pathItems) {
+			return null;
+		}
+		for(String pathItem : pathItems) {
+			if(!isNumeric(pathItem)) {
+				builder.append(pathItem);
+			} else {
+				break;
+			}
+		}
+		return builder.toString();
+	}
+	
 	public static long longValue(String pathItem) {
 		return Long.parseLong(pathItem.substring(1));
 	}

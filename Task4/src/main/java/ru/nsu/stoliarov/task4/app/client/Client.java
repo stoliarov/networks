@@ -1,286 +1,296 @@
 package ru.nsu.stoliarov.task4.app.client;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.nsu.stoliarov.task4.app.JsonParser;
 import ru.nsu.stoliarov.task4.app.Settings;
+import ru.nsu.stoliarov.task4.app.client.commands.Command;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.sql.Time;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Client implements Runnable {
 	private static Logger logger = LogManager.getLogger(Client.class.getName());
 	
-	private DefaultHttpClient client;
-	private String uri;
-	private String token;
+	private String token = "";
+	private String historyKey = "";
 	private long messagesCount;
 	private Timer messagesUpdater;
 	private Timer confirmSender;
-	private boolean authenticateRequired = false;
+	private Timer activityUpdater;
 	
-	private LinkedBlockingQueue<Task> toSend;
-	private LinkedBlockingQueue<Result> results;
-	private Thread sender;
+	private LinkedBlockingQueue<Task> tasks;
+	private LinkedBlockingQueue<Result> userResults;
+	private ConcurrentHashMap<String, Result> systemResults;
+	private Thread taskExecutor;
 	
-	public Client(String uri) {
-		this.client = new DefaultHttpClient();
-		this.uri = uri;
+	public Client() {
 		this.messagesCount = 0;
 		this.messagesUpdater = new Timer();
 		this.confirmSender = new Timer();
-		this.toSend = new LinkedBlockingQueue<>(10000);
-		this.results = new LinkedBlockingQueue<>(10000);
-		this.sender = new Thread(new Sender(uri, toSend, results));
+		this.activityUpdater = new Timer();
+		this.tasks = new LinkedBlockingQueue<>(10000);
+		this.userResults = new LinkedBlockingQueue<>(10000);
+		this.systemResults = new ConcurrentHashMap<>();
+		this.taskExecutor = new Thread(new TaskExecutor(tasks, userResults, systemResults));
 	}
-	
-	// todo 1) комманды в executeCommand 2) таймер для отправки конфирмов 3) таймер для запросов инфы о смене активности пользователей
 	
 	@Override
 	public void run() {
-		sender.start();
+		taskExecutor.start();
 		
-//		while(200 != login()) {
-//		}
-//		waitForCommand();
+		Scanner scanner = new Scanner(System.in);
+		printCommandsList();
+		try {
+			while(true) {
+				String commandName = scanner.nextLine();
+				executeCommand(commandName);
+			}
+		} catch (InterruptedException e) {
+			logger.debug("Client is interrupted");
+		}
 	}
-//
-//	private void waitForCommand() {
-//		Scanner scanner = new Scanner(System.in);
-//		printCommandsList();
-//
-//		while(true) {
-//			String command = scanner.nextLine();
-//			executeCommand(command);
-//			if(authenticateRequired) {
-//				while(200 != login()) {}
-//			}
-//		}
-//	}
-//
-//	private void executeCommand(String command) {
-//		if(command.length() > 5 && command.substring(0, 6).equals("/users")) {
-//
-//		} else if(command.length() > 6 && command.substring(0, 5).equals("/user")) {
-//
-//		} else if(command.length() > 4 && command.substring(0, 5).equals("/exit")) {
-//			int statusCode = logout();
-//			if(200 == statusCode) {
-//				endSession();
-//				while(200 != login()) {}
-//
-//			} else if(403 == statusCode) {
-//				endSession();
-//				System.out.println("А у вас как раз токен просрочен. Так что вы успешно вышли");
-//				while(200 != login()) {}
-//
-//			} else {
-//				System.out.println("Не удалось выполнить команду");
-//			}
-//
-//		} else if(command.length() > 7 && command.substring(0, 6).equals("/write")) {
-//
-//		} else if(command.length() > 4 && command.substring(0, 5).equals("/help")) {
-//			printCommandsList();
-//		} else {
-//			System.out.println("\"" + command + "\" - не является командой");
-//		}
-//	}
-//
-//	private void printCommandsList() {
-//		System.out.println("------Список доступных комманд:------");
-//		System.out.println("/users - показать список активных пользователей");
-//		System.out.println("/user <id> - показать пользователя с указанным id");
-//		System.out.println("/exit - выйти");
-//		System.out.println("/write <some_message_text> - отправить сообщение");
-//		System.out.println("/help - показать список доступных комманд");
-//	}
-//
-//	private void endSession() {
-//		messagesUpdater.cancel();
-//		confirmSender.cancel();
-//		messagesUpdater = new Timer();
-//		confirmSender = new Timer();
-//		authenticateRequired = true;
-//	}
-//
-//	private void startSession() {
-//		authenticateRequired = false;
-//		messagesUpdater.schedule(new ShowNewMessages(), 500, 500);
-//		confirmSender.schedule(new ConfirmationSending(), Settings.CONFIRMATION_TIMEOUT, Settings.CONFIRMATION_TIMEOUT);
-//	}
-//
-//	private int updateMessagesCount() {
-//		HttpGet getRequest = new HttpGet(uri + "/messages/size");
-//		try {
-//			getRequest.addHeader("Authorization", "Token " + token);
-//			HttpResponse response = client.execute(getRequest);
-//			String body = readBody(response);
-//
-//			int statusCode = checkStatusCode(response);
-//			if(200 != statusCode) {
-//				return statusCode;
-//			}
-//
-//			JSONObject bodyJson = JsonParser.getJSONbyString(body);
-//			messagesCount = (long) bodyJson.get("size");
-//
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return 200;
-//	}
-//
-//	private int showMessages(long offset, long count) {
-//		HttpGet getRequest = new HttpGet(uri + "/messages?offset=" + offset + "&count=" + count);
-//		return executeShowMessages(getRequest);
-//	}
-//
-//	private int showMessages(long offset) {
-//		HttpGet getRequest = new HttpGet(uri + "/messages?offset=" + offset);
-//		return executeShowMessages(getRequest);
-//	}
-//
-//	private int executeShowMessages(HttpGet getRequest) {
-//		try {
-//			getRequest.addHeader("Authorization", "Token " + token);
-//			HttpResponse response = client.execute(getRequest);
-//			String body = readBody(response);
-//
-//			int statusCode = checkStatusCode(response);
-//			if(200 != statusCode) {
-//				return statusCode;
-//			}
-//
-//			JSONObject bodyJson = JsonParser.getJSONbyString(body);
-//			JSONArray messagesJson = (JSONArray) bodyJson.get("messages");
-//			messagesJson.forEach(v -> {
-//				JSONObject message = (JSONObject) v;
-//				printMessage((String) message.get("message"), (String) message.get("author"));
-//			});
-//
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return 200;
-//	}
-//
-//
-//	private void showUsers() {
-//
-//	}
-//
-//	private void printMessage(String message, String author) {
-//		System.out.println("<Получено сообщение \"" + message + "\" от " + author + ">");
-//	}
-//
-//	private int login() throws InterruptedException {
-//		System.out.println("Введите ваше имя для входа в чат:");
-//		Scanner scanner = new Scanner(System.in);
-//		String username = scanner.nextLine();
-//
-//		toSend.offer(new Task(TaskName.LOGIN.toString(), username));
-//		Result result = results.take();
-//
-//		if(200 == result.getStatusCode()) {
-//			startSession();
-//		}
-//
-//		return result.getStatusCode();
-//	}
-//
-//	private int logout() {
-//		HttpPost postRequest = new HttpPost(uri + "/logout");
-//		try {
-//			postRequest.addHeader("Authorization", "Token " + token);
-//			HttpResponse response = client.execute(postRequest);
-//			String body = readBody(response);
-//
-//			int statusCode = checkStatusCode(response);
-//			if(200 != statusCode) {
-//				return statusCode;
-//			}
-//
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		System.out.println("Вы успешно вышли из сети");
-//
-//		return 200;
-//	}
-//
-//	private int sendConfirm() {
-//		HttpPost postRequest = new HttpPost(uri + "/confirm");
-//		try {
-//			StringEntity input = new StringEntity("{\"confirm\":\" \"}", "UTF-8");
-//			input.setContentType("application/json");
-//			postRequest.addHeader("Authorization", "Token " + token);
-//			postRequest.setEntity(input);
-//
-//			HttpResponse response = client.execute(postRequest);
-//
-//			String body = readBody(response);
-//
-//			int statusCode = checkStatusCode(response);
-//			if(200 != statusCode) {
-//				return statusCode;
-//			}
-//
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return 200;
-//	}
-//
-//	private class ShowNewMessages extends TimerTask {
-//		@Override
-//		public void run() {
-//			long oldMessagesCount = messagesCount;
-//			int statusCode = updateMessagesCount();
-//			if(200 != statusCode) {
-//				endSession();
-//				System.out.println("Не удалось получить messagesCount у сервера. Вывод новых сообщений приостановлен");
-//			} else if(oldMessagesCount < messagesCount){
-//				if(200 != showMessages(oldMessagesCount, messagesCount)) {
-//					endSession();
-//					System.out.println("Не удалось получить новые сообщения. Вывод сообщений приостановлен");
-//				}
-//			}
-//		}
-//	}
-//
-//	private class ConfirmationSending extends TimerTask {
-//		@Override
-//		public void run() {
-////			int statusCode = sendConfirm();
-////			if(200 != statusCode) {
-////				endSession();
-////			}
-//		}
-//	}
+	
+	private void executeCommand(String commandName) throws InterruptedException {
+		try {
+			Command command = Factory.getInstance().getCommand(commandName);
+			command.enterData();
+			
+			Task task = new Task(command, new CommandParams(token), true);
+			if(!tasks.offer(task)) {
+				logger.warn("Failed to execute the command. The tasks queue is busy.");
+			}
+			
+			Result result = userResults.take();
+			if(1 == result.getStatusCode()) {
+				System.out.println(result.getData());
+				resend(task);
+				result = userResults.take();
+				if(1 == result.getStatusCode()) {
+					System.out.println(result.getData());
+					resend(task);
+					result = userResults.take();
+					if(1 == result.getStatusCode()) {
+						System.out.println("Сервер недоступен");
+						printCommandsList();
+						return;
+					}
+				}
+			}
+			
+			if(200 == result.getStatusCode() && result.getTaskName().equals("/login")) {
+				token = result.getToken();
+				historyKey = result.getData();
+				System.out.println("Вы успешно авторизовались");
+				startSession();
+				return;
+			} else if(200 == result.getStatusCode() && result.getTaskName().equals("/logout")) {
+				System.out.println(result.getData());
+				endSession();
+				return;
+			}
+			
+			if(result.containsData()) {
+				System.out.println(result.getData());
+			}
+			
+		} catch (DatatypeConfigurationException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			System.out.println("Такой команды не существует");
+		}
+	}
+	
+	private void resend(Task task) throws InterruptedException {
+		Thread.sleep(2000);
+		if(!tasks.offer(task)) {
+			logger.warn("Failed to execute the command. The tasks queue is busy.");
+		}
+	}
+	
+	private void printCommandsList() {
+		System.out.println("------Список доступных комманд:------");
+		System.out.println("/login - войти в систему");
+		System.out.println("/logout - выйти из системы");
+		System.out.println("/users - показать список активных пользователей");
+		System.out.println("/user - показать пользователя с указанным id");
+		System.out.println("/write - отправить сообщение");
+	}
+	
+	private void endSession() {
+		messagesUpdater.cancel();
+		confirmSender.cancel();
+		activityUpdater.cancel();
+		
+		messagesUpdater = new Timer();
+		confirmSender = new Timer();
+		activityUpdater = new Timer();
+	}
+	
+	private void startSession() throws InterruptedException {
+		long oldMessagesCount = messagesCount;
+		if(updateMessageCount() && oldMessagesCount < messagesCount) {
+			showMessages(oldMessagesCount, messagesCount - oldMessagesCount);
+		}
+		messagesUpdater.schedule(new ShowNewMessages(), 500, 500);
+		confirmSender.schedule(new ConfirmationSending(), Settings.CONFIRMATION_TIMEOUT, Settings.CONFIRMATION_TIMEOUT);
+		activityUpdater.schedule(new ShowUserActivities(), 500, 500);
+	}
+	
+	private void printMessage(String message, String author) {
+		System.out.println("<" + author + " написал: " + message + ">");
+	}
+	
+	private void sendConfirm() throws InterruptedException {
+		try {
+			Command command = Factory.getInstance().getCommand("/confirm");
+			
+			Task task = new Task(command, new CommandParams(token), false);
+			if(!tasks.offer(task)) {
+				logger.warn("Failed to execute the command. The tasks queue is busy.");
+			}
+			
+			while(!systemResults.containsKey("/confirm")) {
+				Thread.sleep(100);
+			}
+			Result result = systemResults.get("/confirm");
+			systemResults.remove("/confirm");
+			
+		} catch (DatatypeConfigurationException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			logger.error("System command not found");
+			e.printStackTrace();
+		}
+	}
+	
+	private void showMessages(long offset, long count) throws InterruptedException {
+		try {
+			Command command = Factory.getInstance().getCommand("/showMessages");
+			
+			Task task = new Task(command, new CommandParams(token, offset, count), false);
+			if(!tasks.offer(task)) {
+				logger.warn("Failed to execute the command. The tasks queue is busy.");
+			}
+			
+			while(!systemResults.containsKey("/showMessages")) {
+				Thread.sleep(100);
+			}
+			Result result = systemResults.get("/showMessages");
+			systemResults.remove("/showMessages");
+			
+			if(200 != result.getStatusCode()) {
+				logger.error("Failed to get new messages");
+			} else {
+				JSONObject bodyJson = JsonParser.getJSONbyString(result.getData());
+				JSONArray messagesJson = (JSONArray) bodyJson.get("messages");
+				messagesJson.forEach(v -> {
+					JSONObject message = (JSONObject) v;
+					printMessage((String) message.get("message"), (String) message.get("author"));
+				});
+			}
+		} catch (DatatypeConfigurationException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			logger.error("System command not found");
+			e.printStackTrace();
+		}
+	}
+	
+	private void showActivities() throws InterruptedException {
+		try {
+			Command command = Factory.getInstance().getCommand("/showActivities");
+			
+			Task task = new Task(command, new CommandParams(token, historyKey), false);
+			if(!tasks.offer(task)) {
+				logger.warn("Failed to execute the command. The tasks queue is busy.");
+			}
+			
+			while(!systemResults.containsKey("/showActivities")) {
+				Thread.sleep(100);
+			}
+			Result result = systemResults.get("/showActivities");
+			systemResults.remove("/showActivities");
+			
+			if(200 != result.getStatusCode()) {
+				logger.error("Failed to get new activities");
+			} else {
+				JSONObject bodyJson = JsonParser.getJSONbyString(result.getData());
+				historyKey = (String) bodyJson.get("historyKey");
+				JSONArray activitiesJson = (JSONArray) bodyJson.get("activities");
+				activitiesJson.forEach(v -> {
+					JSONObject message = (JSONObject) v;
+					System.out.println("<" + (String) message.get("activity") + ">");
+				});
+			}
+		} catch (DatatypeConfigurationException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			logger.error("System command not found");
+			e.printStackTrace();
+		}
+	}
+	
+	private boolean updateMessageCount() throws InterruptedException {
+		try {
+			Command command = Factory.getInstance().getCommand("/messagesCount");
+			
+			Task task = new Task(command, new CommandParams(token), false);
+			if(!tasks.offer(task)) {
+				logger.warn("Failed to execute the command. The tasks queue is busy.");
+			}
+			
+			while(!systemResults.containsKey("/messagesCount")) {
+				Thread.sleep(100);
+			}
+			Result result = systemResults.get("/messagesCount");
+			systemResults.remove("/messagesCount");
+			
+			if(200 != result.getStatusCode()) {
+				logger.error("Failed to update messages count");
+				return false;
+			} else {
+				messagesCount = Long.parseLong(result.getData());
+				return true;
+			}
+		} catch (IllegalAccessException | InstantiationException | DatatypeConfigurationException | ClassNotFoundException e) {
+			logger.error("System command not found");
+			return false;
+		}
+	}
+	
+	private class ShowUserActivities extends TimerTask {
+		@Override
+		public void run() {
+			try {
+				showActivities();
+			} catch (InterruptedException e) {
+				logger.debug("ShowUserActivities timer is interrupted");
+			}
+		}
+	}
+	
+	private class ShowNewMessages extends TimerTask {
+		@Override
+		public void run() {
+			long oldMessagesCount = messagesCount;
+			try {
+				if(updateMessageCount() && oldMessagesCount < messagesCount) {
+					showMessages(oldMessagesCount, messagesCount - oldMessagesCount);
+				}
+			} catch (InterruptedException e) {
+				logger.debug("ShowNewMessages timer task is interrupted");
+			}
+		}
+	}
+	
+	private class ConfirmationSending extends TimerTask {
+		@Override
+		public void run() {
+			try {
+				sendConfirm();
+			} catch (InterruptedException e) {
+				logger.debug("Confirmation sending is interrupted");
+			}
+		}
+	}
 }
