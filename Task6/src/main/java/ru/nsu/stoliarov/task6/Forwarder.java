@@ -10,43 +10,29 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Forwarder implements Runnable {
 	private static final Logger logger = LogManager.getLogger(Forwarder.class.getName());
 	
-	private InetSocketAddress rightAddress = null;
-	private Selector selector = null;
-	private HashMap<InetSocketAddress, SelectionKey> rightKeys;
+	private InetSocketAddress rightAddress;
+	private Selector selector;
+	private ServerSocketChannel mainChannel;
 	
-	private HashMap<InetSocketAddress, Info> clients;
+	// write 4     0100
+	// read 1      0001
+	// connect 8   1000
+	// accept 16  10000
 	
-	/**
-	 * Channel for registration a new input connections
-	 */
-	private ServerSocketChannel mainChannel = null;
-	
-	public Forwarder(int leftPort, String rightHost, int rightPort) {
-		try {
-			this.clients = new HashMap<>();
-			this.rightKeys = new HashMap<InetSocketAddress, SelectionKey>();
-			this.selector = Selector.open();
-			this.mainChannel = ServerSocketChannel.open();
-			this.mainChannel.configureBlocking(false);
-			this.rightAddress = new InetSocketAddress(rightHost, rightPort);
-			this.mainChannel.bind(new InetSocketAddress("localhost", leftPort));
-			
-			// todo возможно надо после каждого успешного аксепта регистрировать интерес на новый аксепт, чтобы ждать новых клиентов
-			this.mainChannel.register(selector, SelectionKey.OP_ACCEPT);
-			
-//			SocketChannel asClient = SocketChannel.open();
-//			asClient.configureBlocking(false);
-//			asClient.register(selector, SelectionKey.OP_CONNECT);
-//			asClient.connect(rightAddress);
-//			System.out.println("right: " + (InetSocketAddress) rightAddress);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public Forwarder(int leftPort, String rightHost, int rightPort) throws IOException {
+		rightAddress = new InetSocketAddress(rightHost, rightPort);
+		selector = Selector.open();
+		mainChannel = ServerSocketChannel.open();
+		
+		mainChannel.bind(new InetSocketAddress("localhost", leftPort));
+		mainChannel.configureBlocking(false);
+		mainChannel.register(selector, SelectionKey.OP_ACCEPT);
 	}
 	
 	@Override
@@ -54,240 +40,117 @@ public class Forwarder implements Runnable {
 		while(true) {
 			try {
 				int numberOfKeys = selector.select();
-				
 				if(0 == numberOfKeys) {
 					continue;
 				}
+				Set<SelectionKey> keys = selector.selectedKeys();
+				Iterator<SelectionKey> iterator = keys.iterator();
 				
-				// gets the keys corresponding to activity
-				Set keys = selector.selectedKeys();
-				Iterator iterator = keys.iterator();
-				
-				// work with each active client
 				while(iterator.hasNext()) {
-					SelectionKey key = (SelectionKey) iterator.next();
+					SelectionKey key = iterator.next();
 					
 					if(key.isAcceptable()) {
-						accept(key);
-					} else if(key.isConnectable()) {
-						if(!connect(key)) return;
-					} else if(key.isReadable()) {
-						read(key);
-					} else if(key.isWritable()) {
+						accept();
+					}
+					if(key.isReadable()) {
+						if(!read(key)) {
+							continue;
+						}
+					}
+					if(key.isWritable()) {
 						write(key);
 					}
-					
-					iterator.remove();  // most important!!!
 				}
 				
+				selector.selectedKeys().clear();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	private boolean connect(SelectionKey key) throws IOException {
-		SocketChannel socketChannel = (SocketChannel) key.channel();
-		Info serverInfo = (Info) key.attachment();
-		
-		try {
-			socketChannel.finishConnect();
-		} catch (java.net.ConnectException e) {
-			logger.debug("Unsuccessful try to connect to right address: " + rightAddress);
-			key.cancel();
-			return false;
-		}
-		
-		SelectionKey clientKey = serverInfo.getChannel().register(selector, SelectionKey.OP_READ);
-		serverInfo.setKey(clientKey);
-		
-		Info clientInfo = clients.get(serverInfo.getAddress());
-		clientInfo.setKey(clientKey);
-		clientKey.attach(clientInfo);
-		
-		SelectionKey serverKey = socketChannel.register(selector, SelectionKey.OP_READ, serverInfo);
-		serverKey.attach(serverInfo);
-		this.rightKeys.put(serverInfo.getAddress(), serverKey);
-		
-		logger.debug("Connected to right address: " + socketChannel.getRemoteAddress());
-		return true;
-	}
-	
-	private boolean accept(SelectionKey key) throws IOException {
+	private void accept() throws IOException {
 		SocketChannel clientSocketChannel = mainChannel.accept();
+		clientSocketChannel.configureBlocking(false);
+		SelectionKey clientKey = clientSocketChannel.register(selector, SelectionKey.OP_READ);
 		
-		if(null == clientSocketChannel) {
-			logger.debug("Client felled of. NULL == clientSocketChanel");
-			key.cancel();
+		SocketChannel serverSocketChannel = SocketChannel.open(rightAddress);
+		serverSocketChannel.configureBlocking(false);
+		SelectionKey serverKey = serverSocketChannel.register(selector, SelectionKey.OP_READ);
+		
+		Info info = new Info(clientKey, serverKey);
+		clientKey.attach(info);
+		serverKey.attach(info);
+	}
+	
+	private boolean read(SelectionKey key) throws IOException {
+		SocketChannel channel = (SocketChannel) key.channel();
+		Info info = (Info) key.attachment();
+		ByteBuffer buffer = info.getBuffer();
+		SelectionKey otherKey = key.equals(info.getServerKey()) ? info.getClientKey() : info.getServerKey();
+		
+		int bytesNumber = channel.read(buffer);
+		if(-1 == bytesNumber) {
+//			logger.debug("read zero bytes from " + ((SocketChannel) key.channel()).getRemoteAddress());
+			key.interestOpsAnd(0);
 			return false;
 		}
 		
-		clientSocketChannel.configureBlocking(false);
-		
-		Info clientInfo = new Info((InetSocketAddress) clientSocketChannel.getRemoteAddress(), clientSocketChannel);
-		clients.put(clientInfo.getAddress(), clientInfo);
-		
-		Info serverInfo = new Info((InetSocketAddress) clientSocketChannel.getRemoteAddress(), clientSocketChannel);
-		SocketChannel asClient = SocketChannel.open();
-		asClient.configureBlocking(false);
-		SelectionKey serverKey = asClient.register(selector, SelectionKey.OP_CONNECT);
-		serverKey.attach(serverInfo);
-		asClient.connect(rightAddress);
-		
-		logger.debug("Accepted: " + clientSocketChannel.getRemoteAddress());
-		return true;
-	}
-	
-	int number = 0;
-	
-	private void read(SelectionKey key) throws IOException {
-		SocketChannel channel = (SocketChannel) key.channel();
-		ByteBuffer buffer = ByteBuffer.allocate(512);
-//		String inMessage = new String(buffer.array()).trim();
-		Info info = (Info) key.attachment();
-		
-//		logger.debug("Received: " + inMessage);
-		
-//		if(inMessage.equals("Bye")) {
-//			channel.close();
-//			logger.debug("Chanel is closed");
-//		} else if(inMessage.equals("")) {
-//			logger.debug("Got an empty string from " + channel.getRemoteAddress() + " " + buffer.array().length);
-//			return;
-//		}
-		
-		if(channel.getRemoteAddress().equals(rightAddress)) { // got from site
-//			logger.debug("got from site");
-			number = channel.read(buffer);
-			if(-1 == number) {
-//				key.cancel();
-//				clients.get(info.getAddress()).getKey().cancel();
-//				rightKeys.remove(info.getAddress());
-//				clients.remove(info.getAddress());
-				return;
-			};
-//			System.out.println("server" + number);
-			Info clientInfo = clients.get(info.getAddress());
-			clientInfo.setData(buffer.array());
-			clientInfo.getKey().interestOps(SelectionKey.OP_WRITE);
-		} else { // got from client
-//			logger.debug("got from client");
-			number = channel.read(buffer);
-			if(-1 == number) {
-//				key.cancel();
-//				rightKeys.get(info.getAddress()).cancel();
-//				rightKeys.remove(info.getAddress());
-//				clients.remove(info.getAddress());
-				return;
-			};
-			Info serverInfo = (Info) rightKeys.get(info.getAddress()).attachment();
-			serverInfo.setData(buffer.array());
-			rightKeys.get(info.getAddress()).interestOps(SelectionKey.OP_WRITE);
+		otherKey.interestOpsOr(SelectionKey.OP_WRITE);
+		if(!buffer.hasRemaining()) {
+			key.interestOpsAnd(~SelectionKey.OP_READ);
 		}
-		buffer.flip();
-//		buffer.clear();
+		return true;
 	}
 	
 	private void write(SelectionKey key) throws IOException {
-		Info info = (Info) key.attachment();
 		SocketChannel channel = (SocketChannel) key.channel();
-		ByteBuffer buffer = ByteBuffer.wrap(info.getData());
+		Info info = (Info) key.attachment();
+		ByteBuffer buffer = info.getBuffer();
+		SelectionKey otherKey = key.equals(info.getServerKey()) ? info.getClientKey() : info.getServerKey();
 		
+		buffer.flip();
+		channel.write(buffer);
+		buffer.flip();
 		
-		if(channel.getRemoteAddress().equals(rightAddress)) { // write to site
-//			logger.debug("write to site");
-			channel.write(buffer);
-			
-			info.removeData();
-			key.interestOps(SelectionKey.OP_READ);
-		} else { // write to client
-//			logger.debug("write to client");
-			channel.write(buffer);
-			info.removeData();
-			key.interestOps(SelectionKey.OP_READ);
+		otherKey.interestOpsOr(SelectionKey.OP_READ);
+		if(0 == buffer.position()) {
+			key.interestOpsAnd(~SelectionKey.OP_WRITE);
 		}
-//		buffer.flip();
-		buffer.clear();
-		
-//		String outMessage = "Hello from " + rightAddress.getHostString() + ":" + rightAddress.getPort();
-//
-//		byte[] message = outMessage.getBytes();
-//		ByteBuffer buffer = ByteBuffer.wrap(message);
-//
-//		SocketChannel client = (SocketChannel) key.channel();
-//		client.write(buffer);
-//
-//		logger.debug("Sent: " + outMessage);
-//
-//		buffer.clear();
-//
-//		key.interestOps(SelectionKey.OP_READ);
 	}
 	
 	private class Info {
-		private InetSocketAddress address;
-		private byte[] data = null;
-		private SocketChannel channel;
-		private SelectionKey key;
+		private SelectionKey clientKey;
+		private SelectionKey ServerKey;
+		private ByteBuffer buffer = ByteBuffer.allocate(256);
 		
-		
-		public Info(InetSocketAddress address, SelectionKey key, byte[] data) {
-			this(address, key);
-			this.data = data;
+		Info(SelectionKey client, SelectionKey server) {
+			clientKey = client;
+			ServerKey = server;
 		}
 		
-		public Info(InetSocketAddress address, SelectionKey key) {
-			this.address = address;
-			this.key = key;
+		public void setBuffer(ByteBuffer buffer) {
+			this.buffer = buffer;
 		}
 		
-		public Info(InetSocketAddress address, SocketChannel channel) {
-			this.address = address;
-			this.channel = channel;
+		public ByteBuffer getBuffer() {
+			return buffer;
 		}
 		
-		public Info(InetSocketAddress address) {
-			this.address = address;
+		public SelectionKey getClientKey() {
+			return clientKey;
 		}
 		
-		public SelectionKey getKey() {
-			return key;
+		public void setClientKey(SelectionKey clientKey) {
+			this.clientKey = clientKey;
 		}
 		
-		public void setKey(SelectionKey key) {
-			this.key = key;
+		public SelectionKey getServerKey() {
+			return ServerKey;
 		}
 		
-		public SocketChannel getChannel() {
-			return channel;
-		}
-		
-		public void setChannel(SocketChannel channel) {
-			this.channel = channel;
-		}
-		
-		public boolean hasData() {
-			return null != data;
-		}
-		
-		public InetSocketAddress getAddress() {
-			return address;
-		}
-		
-		public void setAddress(InetSocketAddress address) {
-			this.address = address;
-		}
-		
-		public byte[] getData() {
-			return data;
-		}
-		
-		public void removeData() {
-			data = null;
-		}
-		
-		public void setData(byte[] data) {
-			this.data = data;
+		public void setServerKey(SelectionKey serverKey) {
+			ServerKey = serverKey;
 		}
 	}
 }
