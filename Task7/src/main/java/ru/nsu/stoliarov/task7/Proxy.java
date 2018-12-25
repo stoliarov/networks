@@ -34,17 +34,12 @@ public class Proxy implements Runnable {
 	@Override
 	public void run() {
 		try {
-			DatagramSocket dnsSocket = new DatagramSocket();
-			
 			DatagramChannel asClient = DatagramChannel.open();
 			asClient.configureBlocking(false);
 			
 			dnsKey = asClient.register(selector, SelectionKey.OP_READ);
 			dnsKey.attach(new DnsRequest());
 			asClient.connect(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
-//			dnsSocket.bind(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
-//			dnsSocket.connect(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
-//			dnsKey = dnsSocket.getChannel().register(selector, SelectionKey.OP_READ);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (ClosedChannelException e) {
@@ -70,9 +65,6 @@ public class Proxy implements Runnable {
 				try {
 					SelectionKey key = iterator.next();
 					
-					if(key.isConnectable()) {
-						connect(key);
-					}
 					if(key.isAcceptable()) {
 						accept();
 					}
@@ -92,30 +84,7 @@ public class Proxy implements Runnable {
 		}
 	}
 	
-	private void connect(SelectionKey key) throws IOException {
-		SocketChannel client = (SocketChannel) key.channel();
-		
-		try {
-			client.finishConnect();
-		} catch (java.net.ConnectException e) {
-			Info info = (Info) key.attachment();
-			logger.debug("Unsuccessful try to connect to: ");
-			key.cancel();
-			return;
-		}
-		
-		logger.debug("Connected: " + client.getRemoteAddress());
-		
-		if(client.isConnected()) {
-			key.interestOps(SelectionKey.OP_READ);
-		} else {
-			logger.warn("Connection is failed!!!");
-		}
-	}
-	
-	
 	private void accept() throws IOException {
-//		System.out.println("accept");
 		SocketChannel clientSocketChannel = mainChannel.accept();
 		clientSocketChannel.configureBlocking(false);
 		SelectionKey clientKey = clientSocketChannel.register(selector, SelectionKey.OP_READ);
@@ -149,10 +118,6 @@ public class Proxy implements Runnable {
 			return true;
 		} else {
 			SelectionKey otherKey = key.equals(info.getServerKey()) ? info.getClientKey() : info.getServerKey();
-			if(key.equals(info.getServerKey())) {
-//				System.out.println(channel.getRemoteAddress());
-//				System.out.println(new String(buffer.array()).trim());
-			}
 			otherKey.interestOpsOr(SelectionKey.OP_WRITE);
 			if(!buffer.hasRemaining()) {
 				key.interestOpsAnd(~SelectionKey.OP_READ);
@@ -162,7 +127,6 @@ public class Proxy implements Runnable {
 	}
 	
 	private boolean readFromDns(SelectionKey dnsKey) throws IOException {
-		System.out.println("Получен ответ от dns резолвера");
 		DatagramChannel datagramChannel = (DatagramChannel) dnsKey.channel();
 		DnsRequest dnsRequest = (DnsRequest) this.dnsKey.attachment();
 		ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -172,26 +136,21 @@ public class Proxy implements Runnable {
 		Record[] answers = message.getSectionArray(Section.ANSWER);
 		if(0 == answers.length) {
 			logger.debug("Got no IP-addresses from DNS-resolver");
-			// todo
 		} else {
 			String ipAddress = answers[0].rdataToString();
 			String domainName = answers[0].getName().toString();
 			Info info = dnsRequest.getRequests().get(domainName);
-//			System.out.println(info);
 			byte[] response = new byte[info.getDomainNameLength()];
 			response[0] = 5;
 			response[1] = 0;
 			response[2] = 0;
 			response[3] = 3;
 			for(int i = 4; i < info.getDomainNameLength(); i++) {
-				response[i] = buffer.array()[i];
+				response[i] = info.getBuffer().array()[i];
 			}
 			dnsKey.interestOps(SelectionKey.OP_READ);
 			
 			finishSetup(info.getClientKey(), info, ipAddress, info.getServerPort(), response);
-//			dnsRequest.getRequests().remove(domainName);
-			
-			System.out.println(answers[0].getName() + " " + answers[0].rdataToString() + ":" + info.getServerPort());
 		}
 		
 		return true;
@@ -235,10 +194,6 @@ public class Proxy implements Runnable {
 	
 	private void setupDomainName(SelectionKey key, Info info, ByteBuffer buffer) {
 		logger.debug("got domain name");
-//		for(byte b : buffer.array()) {
-//			System.out.print((int) b + " ");
-//		}
-//		System.out.println();
 		String domainName = extractDomainName(buffer);
 		int port = extractPort(buffer, ((int) buffer.array()[4]) + 5, 2);
 		
@@ -248,7 +203,7 @@ public class Proxy implements Runnable {
 		dnsRequest.getRequests().put(domainName + ".", info);
 		dnsRequest.getToSend().add(domainName + ".");
 		dnsKey.interestOps(SelectionKey.OP_WRITE);
-//		key.interestOpsAnd(0);
+		key.interestOpsAnd(0);
 	}
 	
 	private void setupIPv4(SelectionKey key, Info info, ByteBuffer buffer) throws IOException {
@@ -273,11 +228,6 @@ public class Proxy implements Runnable {
 	private boolean checkBufferLength(Info info, ByteBuffer buffer) {
 		if(buffer.array().length < 3) {
 			logger.warn("Unexpected buffer length");
-//			System.out.println("step: " + info.getStep());
-//			for(byte b : buffer.array()) {
-//				System.out.print((int) b + " ");
-//			}
-//			System.out.println();
 			return true;
 		}
 		return false;
@@ -372,13 +322,6 @@ public class Proxy implements Runnable {
 			});
 			dnsRequest.getToSend().clear();
 
-//			datagramChannel.write(ByteBuffer.wrap(new byte[2]));
-//			Message message = Message.newQuery(Record.newRecord(new Name("www.google.ru."), Type.A, DClass.ANY));
-//			datagramChannel.connect(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
-//			datagramChannel.send(ByteBuffer.wrap(message.toWire()), new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
-//			datagramChannel.write(ByteBuffer.wrap(message.toWire()));
-//			System.out.println("dns-query sent");
-			
 			key.interestOps(SelectionKey.OP_READ);
 			return;
 		}
@@ -389,6 +332,7 @@ public class Proxy implements Runnable {
 		
 		
 		if(info.isSetupMode()) {
+
 			channel.write(buffer);
 			buffer.clear();
 			info.setBuffer(ByteBuffer.allocate(BUFFER_SIZE));
@@ -400,7 +344,6 @@ public class Proxy implements Runnable {
 			
 		} else {
 			SelectionKey otherKey = key.equals(info.getServerKey()) ? info.getClientKey() : info.getServerKey();
-			
 			buffer.flip();
 			channel.write(buffer);
 			buffer.flip();
