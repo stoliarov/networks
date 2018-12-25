@@ -2,29 +2,25 @@ package ru.nsu.stoliarov.task7;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.xbill.DNS.*;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
 
 public class Proxy implements Runnable {
 	private static final Logger logger = LogManager.getLogger(Proxy.class.getName());
 	
-	private final int BUFFER_SIZE = 8192;
+	private final int BUFFER_SIZE = Settings.BUFFER_SIZE;
 	
 	private Selector selector;
 	private ServerSocketChannel mainChannel;
-	
-	// write 4     0100
-	// read 1      0001
-	// connect 8   1000
-	// accept 16  10000
+	private SelectionKey dnsKey;
 	
 	public Proxy(int leftPort) throws IOException {
 		selector = Selector.open();
@@ -37,18 +33,46 @@ public class Proxy implements Runnable {
 	
 	@Override
 	public void run() {
+		try {
+			DatagramSocket dnsSocket = new DatagramSocket();
+			
+			DatagramChannel asClient = DatagramChannel.open();
+			asClient.configureBlocking(false);
+			
+			dnsKey = asClient.register(selector, SelectionKey.OP_READ);
+			dnsKey.attach(new DnsRequest());
+			asClient.connect(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
+//			dnsSocket.bind(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
+//			dnsSocket.connect(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
+//			dnsKey = dnsSocket.getChannel().register(selector, SelectionKey.OP_READ);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (ClosedChannelException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		while(true) {
+			int numberOfKeys = 0;
 			try {
-				int numberOfKeys = selector.select();
-				if(0 == numberOfKeys) {
-					continue;
-				}
-				Set<SelectionKey> keys = selector.selectedKeys();
-				Iterator<SelectionKey> iterator = keys.iterator();
-				
-				while(iterator.hasNext()) {
+				numberOfKeys = selector.select();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(0 == numberOfKeys) {
+				continue;
+			}
+			Set<SelectionKey> keys = selector.selectedKeys();
+			Iterator<SelectionKey> iterator = keys.iterator();
+			
+			while(iterator.hasNext()) {
+				try {
 					SelectionKey key = iterator.next();
 					
+					if(key.isConnectable()) {
+						connect(key);
+					}
 					if(key.isAcceptable()) {
 						accept();
 					}
@@ -60,14 +84,35 @@ public class Proxy implements Runnable {
 					if(key.isWritable()) {
 						write(key);
 					}
+				} catch (IOException e) {
+//			    	e.printStackTrace();
 				}
-				
-				selector.selectedKeys().clear();
-			} catch (IOException e) {
-//				e.printStackTrace();
 			}
+			selector.selectedKeys().clear();
 		}
 	}
+	
+	private void connect(SelectionKey key) throws IOException {
+		SocketChannel client = (SocketChannel) key.channel();
+		
+		try {
+			client.finishConnect();
+		} catch (java.net.ConnectException e) {
+			Info info = (Info) key.attachment();
+			logger.debug("Unsuccessful try to connect to: ");
+			key.cancel();
+			return;
+		}
+		
+		logger.debug("Connected: " + client.getRemoteAddress());
+		
+		if(client.isConnected()) {
+			key.interestOps(SelectionKey.OP_READ);
+		} else {
+			logger.warn("Connection is failed!!!");
+		}
+	}
+	
 	
 	private void accept() throws IOException {
 //		System.out.println("accept");
@@ -80,47 +125,76 @@ public class Proxy implements Runnable {
 	}
 	
 	private boolean read(SelectionKey key) throws IOException {
+		if(key.equals(dnsKey)) {
+			return readFromDns(key);
+		}
+		
 		SocketChannel channel = (SocketChannel) key.channel();
 		Info info = (Info) key.attachment();
 		ByteBuffer buffer = info.getBuffer();
 		
-//		buffer.clear();
 		int bytesNumber = channel.read(buffer);
-//		System.out.println("Прочитано " + bytesNumber);
 		if(-1 == bytesNumber) {
-//			logger.debug("read zero bytes from " + ((SocketChannel) key.channel()).getRemoteAddress());
 			key.interestOpsAnd(0);
 			return false;
 		}
 		
 		if(info.isSetupMode()) {
-//			System.out.println("step: " + info.step);
-//			for(byte b : buffer.array()) {
-//				System.out.print((int) b + " ");
-//			}
-//			System.out.println();
-			
 			if(0 == info.getStep()) {
 				step0(key, info);
 				
 			} else if(1 == info.getStep()) {
 				step1(key, info, buffer);
-				
-			} else if(2 == info.getStep()) {
-				// todo
 			}
-//			buffer.clear();
-			
 			return true;
 		} else {
 			SelectionKey otherKey = key.equals(info.getServerKey()) ? info.getClientKey() : info.getServerKey();
-			
+			if(key.equals(info.getServerKey())) {
+//				System.out.println(channel.getRemoteAddress());
+//				System.out.println(new String(buffer.array()).trim());
+			}
 			otherKey.interestOpsOr(SelectionKey.OP_WRITE);
 			if(!buffer.hasRemaining()) {
 				key.interestOpsAnd(~SelectionKey.OP_READ);
 			}
 			return true;
 		}
+	}
+	
+	private boolean readFromDns(SelectionKey dnsKey) throws IOException {
+		System.out.println("Получен ответ от dns резолвера");
+		DatagramChannel datagramChannel = (DatagramChannel) dnsKey.channel();
+		DnsRequest dnsRequest = (DnsRequest) this.dnsKey.attachment();
+		ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		
+		datagramChannel.read(buffer);
+		Message message = new Message(buffer.array());
+		Record[] answers = message.getSectionArray(Section.ANSWER);
+		if(0 == answers.length) {
+			logger.debug("Got no IP-addresses from DNS-resolver");
+			// todo
+		} else {
+			String ipAddress = answers[0].rdataToString();
+			String domainName = answers[0].getName().toString();
+			Info info = dnsRequest.getRequests().get(domainName);
+//			System.out.println(info);
+			byte[] response = new byte[info.getDomainNameLength()];
+			response[0] = 5;
+			response[1] = 0;
+			response[2] = 0;
+			response[3] = 3;
+			for(int i = 4; i < info.getDomainNameLength(); i++) {
+				response[i] = buffer.array()[i];
+			}
+			dnsKey.interestOps(SelectionKey.OP_READ);
+			
+			finishSetup(info.getClientKey(), info, ipAddress, info.getServerPort(), response);
+//			dnsRequest.getRequests().remove(domainName);
+			
+			System.out.println(answers[0].getName() + " " + answers[0].rdataToString() + ":" + info.getServerPort());
+		}
+		
+		return true;
 	}
 	
 	private void step0(SelectionKey key, Info info) {
@@ -136,46 +210,98 @@ public class Proxy implements Runnable {
 	}
 	
 	private void step1(SelectionKey key, Info info, ByteBuffer buffer) throws IOException {
-		if(1 == buffer.array()[3]) {    // got IPv4 address
-			String ipAddress = extractIpAddress(buffer);
-			int port = extractPort(buffer);
-			
-			byte[] response = new byte[10]; // todo размер
-			response[0] = 5;
-			response[1] = 0;
-			response[2] = 0;
-			response[3] = 1;
-			for(int i = 4; i < 8; i++) {
-				response[i] = buffer.array()[i];
-			}
-			for(int i = 8; i < 10; i++) {
-				response[i] = buffer.array()[i];
-			}
-			
-			buffer = ByteBuffer.wrap(response);
-			info.setBuffer(buffer);
-			info.increaseStep();
-			key.interestOps(SelectionKey.OP_WRITE);
-			
-			SocketChannel serverSocketChannel = SocketChannel.open(new InetSocketAddress(ipAddress, port));
-			serverSocketChannel.configureBlocking(false);
-			SelectionKey serverKey = serverSocketChannel.register(selector, SelectionKey.OP_READ);
-			
-			info.setServerKey(serverKey);
-			serverKey.attach(info);
-			
-		} else if(3 == buffer.array()[3]) {     // got domain name
-			// todo асинхронный резолвинг имен
-			
+		if(checkBufferLength(info, buffer)) return;
+		
+		if(1 == buffer.array()[3]) {
+			setupIPv4(key, info, buffer);
+		} else if(3 == buffer.array()[3]) {
+			setupDomainName(key, info, buffer);
 		} else {
-			// todo отправить ответ, что тип адреса не поддерживается
-			logger.debug("Браузер пытается использовать IPv6. Не поддерживается!");
+			setupIPv6(key, info);
 		}
 	}
 	
-	private int extractPort(ByteBuffer buffer) {
-		StringBuilder portBuilder = new StringBuilder();
+	private void setupIPv6(SelectionKey key, Info info) {
+		ByteBuffer buffer;
+		logger.debug("got IPv6");
+		byte[] response = new byte[2];
+		response[0] = 5;
+		response[1] = 8;
+		
+		buffer = ByteBuffer.wrap(response);
+		info.setBuffer(buffer);
+		key.interestOps(SelectionKey.OP_WRITE);
+	}
+	
+	private void setupDomainName(SelectionKey key, Info info, ByteBuffer buffer) {
+		logger.debug("got domain name");
+//		for(byte b : buffer.array()) {
+//			System.out.print((int) b + " ");
+//		}
+//		System.out.println();
+		String domainName = extractDomainName(buffer);
+		int port = extractPort(buffer, ((int) buffer.array()[4]) + 5, 2);
+		
+		info.setDomainNameLength((int) buffer.array()[4] + 5 + 2);
+		info.setServerPort(port);
+		DnsRequest dnsRequest = (DnsRequest) dnsKey.attachment();
+		dnsRequest.getRequests().put(domainName + ".", info);
+		dnsRequest.getToSend().add(domainName + ".");
+		dnsKey.interestOps(SelectionKey.OP_WRITE);
+//		key.interestOpsAnd(0);
+	}
+	
+	private void setupIPv4(SelectionKey key, Info info, ByteBuffer buffer) throws IOException {
+		logger.debug("got IPv4");
+		String ipAddress = extractIpAddress(buffer);
+		int port = extractPort(buffer, 8, 2);
+		
+		byte[] response = new byte[10];
+		response[0] = 5;
+		response[1] = 0;
+		response[2] = 0;
+		response[3] = 1;
+		for(int i = 4; i < 8; i++) {
+			response[i] = buffer.array()[i];
+		}
 		for(int i = 8; i < 10; i++) {
+			response[i] = buffer.array()[i];
+		}
+		finishSetup(key, info, ipAddress, port, response);
+	}
+	
+	private boolean checkBufferLength(Info info, ByteBuffer buffer) {
+		if(buffer.array().length < 3) {
+			logger.warn("Unexpected buffer length");
+//			System.out.println("step: " + info.getStep());
+//			for(byte b : buffer.array()) {
+//				System.out.print((int) b + " ");
+//			}
+//			System.out.println();
+			return true;
+		}
+		return false;
+	}
+	
+	private void finishSetup(SelectionKey key, Info info, String ipAddress, int port, byte[] response) throws IOException {
+		ByteBuffer buffer;
+		buffer = ByteBuffer.wrap(response);
+		info.setBuffer(buffer);
+		info.increaseStep();
+		key.interestOps(SelectionKey.OP_WRITE);
+		
+		SocketChannel serverSocketChannel = SocketChannel.open(new InetSocketAddress(ipAddress, port));
+		serverSocketChannel.configureBlocking(false);
+		SelectionKey serverKey = serverSocketChannel.register(selector, SelectionKey.OP_READ);
+		
+		info.setServerKey(serverKey);
+		serverKey.attach(info);
+		info.setReadyToReceiveData(true);
+	}
+	
+	private int extractPort(ByteBuffer buffer, int offset, int length) {
+		StringBuilder portBuilder = new StringBuilder();
+		for(int i = offset; i < offset + length; i++) {
 			String pl = null;
 			if(buffer.array()[i] < 0) {
 				pl = extraCode(buffer.array()[i]);
@@ -188,7 +314,7 @@ public class Proxy implements Runnable {
 			}
 			portBuilder.append(pl);
 		}
-//		System.out.println("port " + Integer.parseInt(portBuilder.toString(), 2));
+//		System.out.println("port (parse) " + Integer.parseInt(portBuilder.toString(), 2));
 		return Integer.parseInt(portBuilder.toString(), 2);
 	}
 	
@@ -210,6 +336,14 @@ public class Proxy implements Runnable {
 		return ipAddress.toString();
 	}
 	
+	private String extractDomainName(ByteBuffer buffer) {
+		StringBuilder domainName = new StringBuilder();
+		for(int i = 5; i < buffer.array()[4] + 5; i++) {
+			domainName.append((char) buffer.array()[i]);
+		}
+		return domainName.toString();
+	}
+	
 	private String extraCode(int number) {
 		int plusBin = number * (-1);
 		plusBin -= 1;
@@ -225,27 +359,45 @@ public class Proxy implements Runnable {
 	}
 	
 	private void write(SelectionKey key) throws IOException {
+		if(key.equals(dnsKey)) {
+			DatagramChannel datagramChannel = (DatagramChannel) key.channel();
+			DnsRequest dnsRequest = (DnsRequest) dnsKey.attachment();
+			dnsRequest.getToSend().forEach(domainName -> {
+				try {
+					Message message = Message.newQuery(Record.newRecord(new Name(domainName), Type.A, DClass.ANY));
+					datagramChannel.write(ByteBuffer.wrap(message.toWire()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			dnsRequest.getToSend().clear();
+
+//			datagramChannel.write(ByteBuffer.wrap(new byte[2]));
+//			Message message = Message.newQuery(Record.newRecord(new Name("www.google.ru."), Type.A, DClass.ANY));
+//			datagramChannel.connect(new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
+//			datagramChannel.send(ByteBuffer.wrap(message.toWire()), new InetSocketAddress(ResolverConfig.getCurrentConfig().server(), 53));
+//			datagramChannel.write(ByteBuffer.wrap(message.toWire()));
+//			System.out.println("dns-query sent");
+			
+			key.interestOps(SelectionKey.OP_READ);
+			return;
+		}
+		
 		SocketChannel channel = (SocketChannel) key.channel();
 		Info info = (Info) key.attachment();
 		ByteBuffer buffer = info.getBuffer();
 		
+		
 		if(info.isSetupMode()) {
 			channel.write(buffer);
-//			System.out.println("write");
-//			for(byte b : buffer.array()) {
-//				System.out.print((int) b);
-//			}
-//			System.out.println();
-
 			buffer.clear();
 			info.setBuffer(ByteBuffer.allocate(BUFFER_SIZE));
 			
-			if(2 == info.getStep()) {
+			if(info.isReadyToReceiveData()) {
 				info.setSetupMode(false);
-				key.interestOps(SelectionKey.OP_READ);
-			} else {
-				key.interestOps(SelectionKey.OP_READ);
 			}
+			key.interestOps(SelectionKey.OP_READ);
+			
 		} else {
 			SelectionKey otherKey = key.equals(info.getServerKey()) ? info.getClientKey() : info.getServerKey();
 			
@@ -257,65 +409,6 @@ public class Proxy implements Runnable {
 			if(0 == buffer.position()) {
 				key.interestOpsAnd(~SelectionKey.OP_WRITE);
 			}
-		}
-	}
-	
-	private class Info {
-		private boolean setupMode;
-		private int step;
-		private SelectionKey clientKey;
-		private SelectionKey ServerKey;
-		private ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-		
-		Info(SelectionKey client, SelectionKey server, boolean setupMode) {
-			clientKey = client;
-			ServerKey = server;
-			this.setupMode = setupMode;
-			this.step = 0;
-		}
-		
-		public void setBuffer(ByteBuffer buffer) {
-			this.buffer = buffer;
-		}
-		
-		public ByteBuffer getBuffer() {
-			return buffer;
-		}
-		
-		public SelectionKey getClientKey() {
-			return clientKey;
-		}
-		
-		public void setClientKey(SelectionKey clientKey) {
-			this.clientKey = clientKey;
-		}
-		
-		public SelectionKey getServerKey() {
-			return ServerKey;
-		}
-		
-		public void setServerKey(SelectionKey serverKey) {
-			ServerKey = serverKey;
-		}
-		
-		public boolean isSetupMode() {
-			return setupMode;
-		}
-		
-		public void setSetupMode(boolean setupMode) {
-			this.setupMode = setupMode;
-		}
-		
-		public int getStep() {
-			return step;
-		}
-		
-		public void setStep(int step) {
-			this.step = step;
-		}
-		
-		public void increaseStep() {
-			step++;
 		}
 	}
 }
